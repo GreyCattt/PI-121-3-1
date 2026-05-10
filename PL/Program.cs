@@ -2,7 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using DAL.Data;
 using DAL.Interfaces;
 using DAL.Repositories;
-// using BLL.Services; // Розкоментуємо пізніше
+using BLL.Interfaces;
+using BLL.Services;
+using BLL.Mappings; // Або просто BLL, залежно від того, де твій MappingProfile
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,17 +12,22 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
+// Отримуємо рядок підключення з appsettings.json і підключаємо базу даних
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AuctionDbContext>(options =>
     options.UseSqlServer(connectionString));
 
+// Реєструємо AutoMapper
+builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
+// Реєструємо шари DAL (робота з базою)
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-// Реєструємо універсальний репозиторій для всіх типів сутностей
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-// builder.Services.AddScoped<ILotService, LotService>();
-// builder.Services.AddScoped<IAuctionService, AuctionService>();
+
+// Реєструємо шари BLL (бізнес-логіка)
+builder.Services.AddScoped<ILotService, LotService>();
+builder.Services.AddScoped<IAuctionService, AuctionService>();
 
 var app = builder.Build();
 
