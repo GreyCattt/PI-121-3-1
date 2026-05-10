@@ -4,7 +4,6 @@ using DAL.Interfaces;
 using DAL.Repositories;
 using BLL.Interfaces;
 using BLL.Services;
-using BLL; // Або просто BLL, залежно від того, де твій MappingProfile
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +17,7 @@ builder.Services.AddDbContext<AuctionDbContext>(options =>
     options.UseSqlServer(connectionString));
 
 // Реєструємо AutoMapper
-builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
+builder.Services.AddAutoMapper(new[] { typeof(BLL.MappingProfile).Assembly });
 
 // Реєструємо шари DAL (робота з базою)
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
