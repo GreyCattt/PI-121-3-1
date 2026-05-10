@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using DAL.Data;
+using DAL.Interfaces;
+using DAL.Repositories;
 // using BLL.Services; // Розкоментуємо пізніше
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-
-// Налаштовуємо Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -15,14 +15,10 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<AuctionDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-// ---------------------------------------------------------
-// 2. РЕЄСТРАЦІЯ DEPENDENCY INJECTION (DAL та BLL)
-// ---------------------------------------------------------
-// Тут ми будемо реєструвати наші репозиторії та сервіси. 
-// Залишаємо ці рядки закоментованими як нагадування:
 
-// builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-// builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+// Реєструємо універсальний репозиторій для всіх типів сутностей
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 // builder.Services.AddScoped<ILotService, LotService>();
 // builder.Services.AddScoped<IAuctionService, AuctionService>();
 
