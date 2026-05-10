@@ -12,7 +12,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
 // Отримуємо рядок підключення з appsettings.json і підключаємо базу даних
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AuctionDbContext>(options =>
@@ -31,6 +30,9 @@ builder.Services.AddScoped<IAuctionService, AuctionService>();
 
 var app = builder.Build();
 
+// ДОДАНО: Middleware для глобального перехоплення помилок
+app.UseMiddleware<PL.Middlewares.ExceptionHandlingMiddleware>();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -42,7 +44,4 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
-
 app.Run();
-
-
