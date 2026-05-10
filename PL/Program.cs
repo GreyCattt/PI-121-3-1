@@ -2,7 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using DAL.Data;
 using DAL.Interfaces;
 using DAL.Repositories;
-// using BLL.Services; // Розкоментуємо пізніше
+using AutoMapper;
+//using BLL.Services; // Розкоментуємо пізніше
 
 var builder = WebApplication.CreateBuilder(args);
 
