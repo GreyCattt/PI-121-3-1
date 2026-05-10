@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-// using DAL.Data; // Розкоментуємо це пізніше, коли створимо AuctionDbContext
+using DAL.Data;
 // using BLL.Services; // Розкоментуємо пізніше
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,10 +11,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-/*
+
 builder.Services.AddDbContext<AuctionDbContext>(options =>
     options.UseSqlServer(connectionString));
-*/
+
 // ---------------------------------------------------------
 // 2. РЕЄСТРАЦІЯ DEPENDENCY INJECTION (DAL та BLL)
 // ---------------------------------------------------------
