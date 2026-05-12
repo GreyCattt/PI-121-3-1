@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization; // ДОДАНО ДЛЯ АВТОРИЗАЦІЇ
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Security.Claims;
 using BLL.Interfaces;
 using BLL.DTOs;
 using PL.Models;
@@ -79,6 +80,12 @@ namespace PL.Controllers
         [Authorize(Roles = "Registered,Manager,Admin")]
         public async Task<ActionResult<int>> CreateLot([FromBody] CreateLotRequest request)
         {
+            var sellerId = GetCurrentUserId();
+            if (sellerId == null)
+            {
+                return Unauthorized(new { message = "Не вдалося визначити користувача з токена." });
+            }
+
             var lotDto = new LotCreateDto
             {
                 Title = request.Title,
@@ -87,7 +94,7 @@ namespace PL.Controllers
                 StartTime = request.StartTime,
                 EndTime = request.EndTime,
                 CategoryId = request.CategoryId,
-                SellerId = request.SellerId
+                SellerId = sellerId.Value
             };
 
             var lotId = await _lotService.CreateLotAsync(lotDto);
@@ -102,6 +109,12 @@ namespace PL.Controllers
         {
             await _lotService.ApproveLotAsync(id, managerId);
             return NoContent();
+        }
+
+        private int? GetCurrentUserId()
+        {
+            var userIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.TryParse(userIdValue, out var userId) ? userId : null;
         }
     }
 }

@@ -5,8 +5,17 @@
 
 // API базовий URL
 const API_BASE_URL = '/api';
+const TOKEN_STORAGE_KEY = 'auction.jwt';
 
 // DOM елементи
+const loginForm = document.getElementById('loginForm');
+const registerForm = document.getElementById('registerForm');
+const meButton = document.getElementById('meButton');
+const logoutButton = document.getElementById('logoutButton');
+const authMessage = document.getElementById('authMessage');
+const tokenOutput = document.getElementById('tokenOutput');
+const currentUserOutput = document.getElementById('currentUserOutput');
+const authStatusBadge = document.getElementById('authStatusBadge');
 const searchForm = document.getElementById('searchForm');
 const lotsList = document.getElementById('lotsList');
 const loadingElement = document.getElementById('loading');
@@ -16,11 +25,17 @@ const modal = document.getElementById('lotModal');
 const closeBtn = document.querySelector('.close');
 
 // Слухачі подій
+loginForm.addEventListener('submit', handleLogin);
+registerForm.addEventListener('submit', handleRegister);
+meButton.addEventListener('click', loadCurrentUser);
+logoutButton.addEventListener('click', logout);
 searchForm.addEventListener('submit', handleSearch);
 closeBtn.addEventListener('click', closeModal);
 window.addEventListener('click', (e) => {
     if (e.target === modal) closeModal();
 });
+
+initializeAuthState();
 
 /**
  * Обробник форми пошуку
@@ -78,6 +93,138 @@ async function handleSearch(e) {
         errorElement.style.display = 'block';
         console.error('Помилка пошуку:', error);
     }
+}
+
+async function handleLogin(e) {
+    e.preventDefault();
+
+    const payload = {
+        email: document.getElementById('loginEmail').value,
+        password: document.getElementById('loginPassword').value
+    };
+
+    await authenticate('/auth/login', payload, 'Вхід виконано успішно');
+}
+
+async function handleRegister(e) {
+    e.preventDefault();
+
+    const payload = {
+        username: document.getElementById('registerUsername').value,
+        email: document.getElementById('registerEmail').value,
+        password: document.getElementById('registerPassword').value
+    };
+
+    await authenticate('/auth/register', payload, 'Реєстрацію завершено успішно');
+}
+
+async function authenticate(endpoint, payload, successMessage) {
+    showAuthMessage('');
+
+    try {
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data?.error || 'Помилка авторизації');
+        }
+
+        const token = data.token || data.Token;
+        if (!token) {
+            throw new Error('Сервер не повернув JWT token');
+        }
+
+        setToken(token);
+        showAuthMessage(successMessage);
+        await loadCurrentUser();
+    } catch (error) {
+        showAuthMessage(`❌ ${error.message}`, true);
+    }
+}
+
+async function loadCurrentUser() {
+    const token = getToken();
+    if (!token) {
+        currentUserOutput.textContent = 'Користувач не авторизований';
+        updateAuthBadge(false);
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/auth/me`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data?.error || 'Не вдалося отримати профіль');
+        }
+
+        currentUserOutput.textContent = JSON.stringify(data, null, 2);
+        updateAuthBadge(true, data.username);
+    } catch (error) {
+        currentUserOutput.textContent = `❌ ${error.message}`;
+        updateAuthBadge(false);
+    }
+}
+
+function initializeAuthState() {
+    const token = getToken();
+    if (token) {
+        tokenOutput.value = token;
+        loadCurrentUser();
+    } else {
+        tokenOutput.value = '';
+        currentUserOutput.textContent = 'Користувач не авторизований';
+        updateAuthBadge(false);
+    }
+}
+
+function logout() {
+    localStorage.removeItem(TOKEN_STORAGE_KEY);
+    tokenOutput.value = '';
+    currentUserOutput.textContent = 'Користувач не авторизований';
+    showAuthMessage('Вихід виконано');
+    updateAuthBadge(false);
+}
+
+function setToken(token) {
+    localStorage.setItem(TOKEN_STORAGE_KEY, token);
+    tokenOutput.value = token;
+}
+
+function getToken() {
+    return localStorage.getItem(TOKEN_STORAGE_KEY);
+}
+
+function updateAuthBadge(isAuthenticated, username = '') {
+    authStatusBadge.className = `status-pill ${isAuthenticated ? 'status-authenticated' : 'status-guest'}`;
+    authStatusBadge.textContent = isAuthenticated ? `Auth${username ? `: ${username}` : ''}` : 'Guest';
+}
+
+function showAuthMessage(message, isError = false) {
+    if (!message) {
+        authMessage.style.display = 'none';
+        authMessage.textContent = '';
+        authMessage.style.borderLeftColor = '#667eea';
+        return;
+    }
+
+    authMessage.textContent = message;
+    authMessage.style.display = 'block';
+    authMessage.style.borderLeftColor = isError ? '#c33' : '#667eea';
+    authMessage.style.color = isError ? '#8d1f1f' : '#243b73';
+    authMessage.style.background = isError ? '#fff1f1' : '#eef4ff';
 }
 
 /**

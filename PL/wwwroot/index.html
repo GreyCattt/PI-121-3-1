@@ -4,6 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Internet Auction - Пошук лотів</title>
+
+        <!-- Авторизація -->
+        <section class="auth-section">
+            <div class="auth-header">
+                <div>
+                    <h2>Авторизація</h2>
+                    <p>Увійди або зареєструйся, щоб працювати з JWT-захищеними ендпоінтами.</p>
+                </div>
+                <div class="auth-status">
+                    <span id="authStatusBadge" class="status-pill status-guest">Guest</span>
+                </div>
+            </div>
+
+            <div class="auth-grid">
+                <form id="loginForm" class="auth-card">
+                    <h3>Вхід</h3>
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" class="input-field" placeholder="admin@auction.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Пароль</label>
+                        <input type="password" id="loginPassword" class="input-field" placeholder="Admin123!" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">Увійти</button>
+                </form>
+
+                <form id="registerForm" class="auth-card">
+                    <h3>Реєстрація</h3>
+                    <div class="form-group">
+                        <label for="registerUsername">Username</label>
+                        <input type="text" id="registerUsername" class="input-field" placeholder="buyer1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">Email</label>
+                        <input type="email" id="registerEmail" class="input-field" placeholder="buyer1@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Пароль</label>
+                        <input type="password" id="registerPassword" class="input-field" placeholder="Buyer123!" required>
+                    </div>
+                    <button type="submit" class="btn btn-secondary btn-full">Зареєструватися</button>
+                </form>
+            </div>
+
+            <div class="auth-tools">
+                <button id="meButton" type="button" class="btn btn-ghost">Показати мій профіль</button>
+                <button id="logoutButton" type="button" class="btn btn-danger">Вийти</button>
+            </div>
+
+            <div id="authMessage" class="auth-message" style="display: none;"></div>
+
+            <div class="token-panel">
+                <div class="token-label">JWT токен</div>
+                <textarea id="tokenOutput" readonly placeholder="Тут з'явиться токен після логіну або реєстрації"></textarea>
+            </div>
+
+            <div class="profile-panel">
+                <h3>Поточний користувач</h3>
+                <pre id="currentUserOutput">Ще не завантажено</pre>
+            </div>
+        </section>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>

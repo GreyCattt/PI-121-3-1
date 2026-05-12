@@ -37,6 +37,152 @@ header h1 {
     opacity: 0.9;
 }
 
+/* Авторизація */
+.auth-section {
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 30px;
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.18);
+    backdrop-filter: blur(8px);
+}
+
+.auth-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.auth-header h2 {
+    color: #1f2a44;
+    margin-bottom: 6px;
+}
+
+.auth-header p {
+    color: #5a6477;
+}
+
+.auth-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.auth-card {
+    background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+    border: 1px solid rgba(31, 42, 68, 0.08);
+    border-radius: 14px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.auth-card h3 {
+    color: #1f2a44;
+}
+
+.auth-tools {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+
+.btn-full {
+    width: 100%;
+}
+
+.btn-ghost {
+    background: transparent;
+    border: 2px solid #667eea;
+    color: #667eea;
+}
+
+.btn-ghost:hover {
+    background: rgba(102, 126, 234, 0.08);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #ff6b6b 0%, #c44569 100%);
+    color: white;
+}
+
+.btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(196, 69, 105, 0.28);
+}
+
+.auth-message {
+    margin-top: 16px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    background: #eef4ff;
+    color: #243b73;
+    border-left: 4px solid #667eea;
+}
+
+.token-panel,
+.profile-panel {
+    margin-top: 16px;
+    background: #101828;
+    color: #f8fafc;
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.token-label {
+    font-size: 0.85em;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #94a3b8;
+    margin-bottom: 8px;
+}
+
+#tokenOutput {
+    width: 100%;
+    min-height: 92px;
+    border: none;
+    resize: vertical;
+    background: #0b1120;
+    color: #dbeafe;
+    border-radius: 8px;
+    padding: 12px;
+    font-family: 'SFMono-Regular', Consolas, monospace;
+}
+
+#currentUserOutput {
+    margin: 0;
+    white-space: pre-wrap;
+    background: #0b1120;
+    color: #dbeafe;
+    border-radius: 8px;
+    padding: 12px;
+    overflow-x: auto;
+}
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.9em;
+}
+
+.status-guest {
+    background: rgba(255, 255, 255, 0.72);
+    color: #3b4253;
+}
+
+.status-authenticated {
+    background: #e7f8ee;
+    color: #1f7a3f;
+}
+
 /* Секція пошуку */
 .search-section {
     background: white;
@@ -358,6 +504,15 @@ header h1 {
 @media (max-width: 768px) {
     header h1 {
         font-size: 2em;
+    }
+
+    .auth-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .auth-grid {
+        grid-template-columns: 1fr;
     }
 
     .form-row {
