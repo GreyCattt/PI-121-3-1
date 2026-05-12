@@ -52,6 +52,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseDefaultFiles();
+app.UseStaticFiles(); // Serve static files з wwwroot (HTML, CSS, JS)
 app.UseAuthorization();
 app.MapControllers();
 
