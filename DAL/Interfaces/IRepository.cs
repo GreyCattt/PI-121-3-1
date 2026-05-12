@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DAL.Interfaces
@@ -10,5 +11,6 @@ namespace DAL.Interfaces
         Task AddAsync(T entity);
         void Update(T entity);
         void Delete(T entity);
+        IQueryable<T> GetAsQueryable();
     }
 }

@@ -6,6 +6,7 @@ using System.Text;
 using DAL.Data;
 using DAL.Interfaces;
 using DAL.Repositories;
+using DAL.Services;
 using BLL.Interfaces;
 using BLL.Services;
 using BLL;
@@ -51,6 +52,7 @@ builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<SeedService>();
 
 builder.Services.AddScoped<ILotService, LotService>();
 builder.Services.AddScoped<IAuctionService, AuctionService>();
@@ -78,6 +80,20 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
+<<<<<<< HEAD
+=======
+// ДОДАНО: Seed тестових даних при запуску (лише в режимі Development)
+if (app.Environment.IsDevelopment())
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var seedService = scope.ServiceProvider.GetRequiredService<SeedService>();
+        await seedService.SeedAsync();
+    }
+}
+
+// ДОДАНО: Middleware для глобального перехоплення помилок
+>>>>>>> 04d97c1ecbb61b0453626c7d8420a454b61c36d1
 app.UseMiddleware<PL.Middlewares.ExceptionHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
