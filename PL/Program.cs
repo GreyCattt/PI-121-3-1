@@ -52,7 +52,8 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is missing in configuration.");
 builder.Services.AddDbContext<AuctionDbContext>(options =>
     options.UseSqlServer(connectionString));
 

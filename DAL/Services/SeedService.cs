@@ -32,11 +32,11 @@ namespace DAL.Services
                 // Перевіряємо, чи вже є дані
                 if (await _context.Users.AnyAsync())
                 {
-                    Console.WriteLine("Дані вже в БД, seed пропущено.");
+                    Console.WriteLine("✅ Дані вже в БД, seed пропущено.");
                     return;
                 }
 
-                Console.WriteLine("Додавання тестових даних...");
+                Console.WriteLine("🌱 Додавання тестових даних...");
 
                 // Додаємо користувачів (включаючи адміністратора)
                 var admin = new User
@@ -178,10 +178,17 @@ namespace DAL.Services
                 Console.WriteLine($"   - Лотів: 4");
                 Console.WriteLine($"   - Ставок: 2");
             }
+            catch (InvalidOperationException dbEx) when (dbEx.Message.Contains("Connection"))
+            {
+                Console.WriteLine($"⚠️  Помилка підключення до БД: {dbEx.Message}");
+                Console.WriteLine("ℹ️  Переконайтеся, що SQL Server запущений.");
+                Console.WriteLine("   Для запуску використайте: docker-compose up -d");
+                // Не кидаємо виключення, щоб додаток міг стартувати без БД
+            }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Помилка при додаванні тестових даних: {ex.Message}");
-                throw;
+                Console.WriteLine($"❌ Помилка при додаванні тестових даних: {ex.GetType().Name}: {ex.Message}");
+                // Не кидаємо виключення, щоб додаток міг стартувати без БД
             }
         }
     }
