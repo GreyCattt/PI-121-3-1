@@ -80,8 +80,6 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-<<<<<<< HEAD
-=======
 // ДОДАНО: Seed тестових даних при запуску (лише в режимі Development)
 if (app.Environment.IsDevelopment())
 {
@@ -93,7 +91,6 @@ if (app.Environment.IsDevelopment())
 }
 
 // ДОДАНО: Middleware для глобального перехоплення помилок
->>>>>>> 04d97c1ecbb61b0453626c7d8420a454b61c36d1
 app.UseMiddleware<PL.Middlewares.ExceptionHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
@@ -103,8 +100,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-// 3. ПІДКЛЮЧАЄМО АУТЕНТИФІКАЦІЮ В КОНВЕЄР (Обов'язково перед Authorization!)
+app.UseDefaultFiles();
+app.UseStaticFiles();
 app.UseAuthentication();
 app.UseAuthorization();
 
