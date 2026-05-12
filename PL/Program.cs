@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using DAL.Data;
 using DAL.Interfaces;
 using DAL.Repositories;
+using DAL.Services;
 using BLL.Interfaces;
 using BLL.Services;
 
@@ -22,12 +23,23 @@ builder.Services.AddAutoMapper(new[] { typeof(BLL.MappingProfile).Assembly });
 // Реєструємо шари DAL (робота з базою)
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<SeedService>();
 
 // Реєструємо шари BLL (бізнес-логіка)
 builder.Services.AddScoped<ILotService, LotService>();
 builder.Services.AddScoped<IAuctionService, AuctionService>();
 
 var app = builder.Build();
+
+// ДОДАНО: Seed тестових даних при запуску (лише в режимі Development)
+if (app.Environment.IsDevelopment())
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var seedService = scope.ServiceProvider.GetRequiredService<SeedService>();
+        await seedService.SeedAsync();
+    }
+}
 
 // ДОДАНО: Middleware для глобального перехоплення помилок
 app.UseMiddleware<PL.Middlewares.ExceptionHandlingMiddleware>();

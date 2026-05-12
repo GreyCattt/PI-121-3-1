@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using DAL.Interfaces;
@@ -40,6 +41,14 @@ namespace DAL.Repositories
         public void Delete(T entity)
         {
             _dbSet.Remove(entity);
+        }
+
+        /// <summary>
+        /// Повертає IQueryable для побудування фільтрованих запитів
+        /// </summary>
+        public IQueryable<T> GetAsQueryable()
+        {
+            return _dbSet.AsQueryable();
         }
     }
 }

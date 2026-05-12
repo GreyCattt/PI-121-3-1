@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using BLL.Interfaces;
 using BLL.DTOs;
 using PL.Models;
+using DAL.Entities;
 
 namespace PL.Controllers
 {
@@ -27,6 +28,41 @@ namespace PL.Controllers
         {
             var lots = await _lotService.GetAllLotsAsync();
             return Ok(lots); // Повертає HTTP статус 200 (OK) з даними
+        }
+
+        // GET: api/lots/search?searchQuery=iPhone&minPrice=100&maxPrice=500&categoryId=1&status=Active
+        // Пошук і фільтрація лотів
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<LotDto>>> SearchAndFilterLots(
+            [FromQuery] string? searchQuery = null,
+            [FromQuery] int? categoryId = null,
+            [FromQuery] string? status = null,
+            [FromQuery] decimal? minPrice = null,
+            [FromQuery] decimal? maxPrice = null)
+        {
+            // Конвертуємо рядок статусу в enum (якщо передано)
+            LotStatus? lotStatus = null;
+            if (!string.IsNullOrWhiteSpace(status))
+            {
+                if (System.Enum.TryParse<LotStatus>(status, ignoreCase: true, out var parsedStatus))
+                {
+                    lotStatus = parsedStatus;
+                }
+                else
+                {
+                    // Якщо статус невалідний, повертаємо помилку
+                    return BadRequest(new { message = $"Невалідний статус '{status}'. Допустимі значення: Pending, Active, Cancelled, Sold, NotSold" });
+                }
+            }
+
+            var lots = await _lotService.SearchAndFilterLotsAsync(
+                searchQuery: searchQuery,
+                categoryId: categoryId,
+                status: lotStatus,
+                minPrice: minPrice,
+                maxPrice: maxPrice);
+
+            return Ok(lots);
         }
 
         // GET: api/lots/5
