@@ -1,0 +1,534 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px 0;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Заголовок */
+header {
+    text-align: center;
+    color: white;
+    margin-bottom: 40px;
+    padding: 30px 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    font-size: 1.2em;
+    opacity: 0.9;
+}
+
+/* Авторизація */
+.auth-section {
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 30px;
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.18);
+    backdrop-filter: blur(8px);
+}
+
+.auth-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.auth-header h2 {
+    color: #1f2a44;
+    margin-bottom: 6px;
+}
+
+.auth-header p {
+    color: #5a6477;
+}
+
+.auth-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.auth-card {
+    background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+    border: 1px solid rgba(31, 42, 68, 0.08);
+    border-radius: 14px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.auth-card h3 {
+    color: #1f2a44;
+}
+
+.auth-tools {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+
+.btn-full {
+    width: 100%;
+}
+
+.btn-ghost {
+    background: transparent;
+    border: 2px solid #667eea;
+    color: #667eea;
+}
+
+.btn-ghost:hover {
+    background: rgba(102, 126, 234, 0.08);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #ff6b6b 0%, #c44569 100%);
+    color: white;
+}
+
+.btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(196, 69, 105, 0.28);
+}
+
+.auth-message {
+    margin-top: 16px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    background: #eef4ff;
+    color: #243b73;
+    border-left: 4px solid #667eea;
+}
+
+.token-panel,
+.profile-panel {
+    margin-top: 16px;
+    background: #101828;
+    color: #f8fafc;
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.token-label {
+    font-size: 0.85em;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #94a3b8;
+    margin-bottom: 8px;
+}
+
+#tokenOutput {
+    width: 100%;
+    min-height: 92px;
+    border: none;
+    resize: vertical;
+    background: #0b1120;
+    color: #dbeafe;
+    border-radius: 8px;
+    padding: 12px;
+    font-family: 'SFMono-Regular', Consolas, monospace;
+}
+
+#currentUserOutput {
+    margin: 0;
+    white-space: pre-wrap;
+    background: #0b1120;
+    color: #dbeafe;
+    border-radius: 8px;
+    padding: 12px;
+    overflow-x: auto;
+}
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.9em;
+}
+
+.status-guest {
+    background: rgba(255, 255, 255, 0.72);
+    color: #3b4253;
+}
+
+.status-authenticated {
+    background: #e7f8ee;
+    color: #1f7a3f;
+}
+
+/* Секція пошуку */
+.search-section {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.search-section h2 {
+    color: #667eea;
+    margin-bottom: 20px;
+    font-size: 1.8em;
+}
+
+.search-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+    font-size: 0.95em;
+}
+
+.input-field {
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 1em;
+    transition: all 0.3s ease;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 8px rgba(102, 126, 234, 0.2);
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.btn {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.btn-secondary:hover {
+    background: #e0e0e0;
+}
+
+/* Статус завантаження */
+.loading {
+    text-align: center;
+    padding: 40px;
+    background: white;
+    border-radius: 12px;
+    font-size: 1.2em;
+    color: #667eea;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Помилки */
+.error-message {
+    background: #fee;
+    color: #c33;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    border-left: 4px solid #c33;
+}
+
+/* Секція результатів */
+.results-section {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.results-section h2 {
+    color: #667eea;
+    margin-bottom: 20px;
+    font-size: 1.8em;
+}
+
+/* Grid лотів */
+.lots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.lot-card {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.lot-card:hover {
+    transform: translateY(-5px);
+    border-color: #667eea;
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+}
+
+.lot-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 12px;
+}
+
+.lot-title {
+    font-size: 1.2em;
+    font-weight: 700;
+    color: #333;
+    flex: 1;
+}
+
+.lot-status {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75em;
+    font-weight: 600;
+    white-space: nowrap;
+    margin-left: 10px;
+}
+
+.status-active {
+    background: #4caf50;
+    color: white;
+}
+
+.status-pending {
+    background: #ff9800;
+    color: white;
+}
+
+.status-sold {
+    background: #2196f3;
+    color: white;
+}
+
+.status-cancelled {
+    background: #f44336;
+    color: white;
+}
+
+.status-notsold {
+    background: #9e9e9e;
+    color: white;
+}
+
+.lot-description {
+    color: #666;
+    font-size: 0.9em;
+    margin-bottom: 12px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.lot-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 0.9em;
+}
+
+.lot-category {
+    color: #667eea;
+    font-weight: 600;
+}
+
+.lot-seller {
+    color: #666;
+}
+
+.lot-prices {
+    background: white;
+    padding: 12px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.price-item {
+    text-align: center;
+}
+
+.price-label {
+    font-size: 0.8em;
+    color: #999;
+    text-transform: uppercase;
+}
+
+.price-value {
+    font-size: 1.3em;
+    font-weight: 700;
+    color: #667eea;
+}
+
+.no-results {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+    font-size: 1.2em;
+}
+
+/* Модальне вікно */
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+}
+
+.close {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 2em;
+    font-weight: bold;
+    color: #aaa;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close:hover {
+    color: #000;
+}
+
+.modal-title {
+    color: #667eea;
+    font-size: 1.8em;
+    margin-bottom: 15px;
+}
+
+.modal-field {
+    margin-bottom: 15px;
+}
+
+.modal-label {
+    font-weight: 600;
+    color: #666;
+    font-size: 0.9em;
+}
+
+.modal-value {
+    font-size: 1.1em;
+    color: #333;
+    margin-top: 5px;
+}
+
+/* Адаптивність */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 2em;
+    }
+
+    .auth-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .auth-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .lots-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .button-group {
+        flex-direction: column;
+    }
+
+    .lot-prices {
+        flex-direction: column;
+        gap: 10px;
+    }
+}

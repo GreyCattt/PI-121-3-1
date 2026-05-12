@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using DAL.Data;
 using DAL.Entities;
 using Microsoft.EntityFrameworkCore;
+using DAL.Services;
 
 namespace DAL.Services
 {
@@ -37,11 +38,20 @@ namespace DAL.Services
 
                 Console.WriteLine("Додавання тестових даних...");
 
-                // Додаємо користувачів
+                // Додаємо користувачів (включаючи адміністратора)
+                var admin = new User
+                {
+                    Username = "SuperAdmin",
+                    Email = "admin@auction.com",
+                    PasswordHash = PasswordHasher.Hash("Admin123!"),
+                    Role = UserRole.Admin
+                };
+
                 var seller = new User
                 {
                     Username = "john_seller",
                     Email = "john@example.com",
+                    PasswordHash = PasswordHasher.Hash("John123!"),
                     Role = UserRole.Registered
                 };
 
@@ -49,6 +59,7 @@ namespace DAL.Services
                 {
                     Username = "manager_admin",
                     Email = "manager@example.com",
+                    PasswordHash = PasswordHasher.Hash("Manager123!"),
                     Role = UserRole.Manager
                 };
 
@@ -56,10 +67,11 @@ namespace DAL.Services
                 {
                     Username = "buyer_user",
                     Email = "buyer@example.com",
+                    PasswordHash = PasswordHasher.Hash("Buyer123!"),
                     Role = UserRole.Registered
                 };
 
-                _context.Users.AddRange(seller, manager, buyer);
+                _context.Users.AddRange(admin, seller, manager, buyer);
                 await _context.SaveChangesAsync();
 
                 // Додаємо категорії
@@ -161,7 +173,7 @@ namespace DAL.Services
                 await _context.SaveChangesAsync();
 
                 Console.WriteLine("✅ Тестові дані успішно додані в БД!");
-                Console.WriteLine($"   - Користувачів: 3 (seller, manager, buyer)");
+                Console.WriteLine($"   - Користувачів: 4 (admin, seller, manager, buyer)");
                 Console.WriteLine($"   - Категорій: 3 (Electronics, Phones, Watches)");
                 Console.WriteLine($"   - Лотів: 4");
                 Console.WriteLine($"   - Ставок: 2");

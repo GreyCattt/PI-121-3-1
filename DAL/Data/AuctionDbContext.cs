@@ -9,11 +9,13 @@ namespace DAL.Data
         {
         }
 
+        // Твої таблиці
         public DbSet<User> Users { get; set; }
-        public DbSet<Category> Categories { get; set; }
         public DbSet<Lot> Lots { get; set; }
         public DbSet<Bid> Bids { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
+        // ДОДАНО: Метод для початкового заповнення бази
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -37,7 +39,7 @@ namespace DAL.Data
                 entity.HasOne(c => c.ParentCategory)
                     .WithMany(c => c.SubCategories)
                     .HasForeignKey(c => c.ParentCategoryId)
-                    .OnDelete(DeleteBehavior.Restrict); // Заборона каскадного видалення для дерева
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             // Налаштування Lot
@@ -82,6 +84,9 @@ namespace DAL.Data
                     .HasForeignKey(b => b.UserId)
                     .OnDelete(DeleteBehavior.Restrict);
             });
+
+            // Примітка: початкові дані (seed) тепер додаються програмно в SeedService,
+            // щоб уникнути конфліктів при міграціях і дублюванні PK.
         }
     }
 }
