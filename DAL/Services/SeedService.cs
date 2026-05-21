@@ -29,23 +29,35 @@ namespace DAL.Services
                 // Переконуємось, що БД створена
                 await _context.Database.MigrateAsync();
 
-                // Перевіряємо, чи вже є дані
-                if (await _context.Users.AnyAsync())
+                var adminExists = await _context.Users.AnyAsync(u => u.Email == "admin@auction.com");
+                if (!adminExists)
                 {
-                    Console.WriteLine("✅ Дані вже в БД, seed пропущено.");
+                    Console.WriteLine("🌱 Додавання дефолтного адміністратора...");
+
+                    var admin = new User
+                    {
+                        Username = "SuperAdmin",
+                        Email = "admin@auction.com",
+                        PasswordHash = PasswordHasher.Hash("Admin123!"),
+                        Role = UserRole.Admin
+                    };
+
+                    _context.Users.Add(admin);
+                    await _context.SaveChangesAsync();
+
+                    Console.WriteLine("✅ Дефолтного адміністратора додано.");
+                }
+
+                // Якщо база вже не порожня, не дублюємо демо-дані.
+                if (await _context.Users.CountAsync() > 1)
+                {
+                    Console.WriteLine("✅ У БД вже є користувачі, seed демо-даних пропущено.");
                     return;
                 }
 
                 Console.WriteLine("🌱 Додавання тестових даних...");
 
-                // Додаємо користувачів (включаючи адміністратора)
-                var admin = new User
-                {
-                    Username = "SuperAdmin",
-                    Email = "admin@auction.com",
-                    PasswordHash = PasswordHasher.Hash("Admin123!"),
-                    Role = UserRole.Admin
-                };
+                var seededAdmin = await _context.Users.FirstAsync(u => u.Email == "admin@auction.com");
 
                 var seller = new User
                 {
@@ -71,7 +83,7 @@ namespace DAL.Services
                     Role = UserRole.Registered
                 };
 
-                _context.Users.AddRange(admin, seller, manager, buyer);
+                _context.Users.AddRange(seller, manager, buyer);
                 await _context.SaveChangesAsync();
 
                 // Додаємо категорії

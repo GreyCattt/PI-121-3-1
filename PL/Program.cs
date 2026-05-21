@@ -94,14 +94,11 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// ДОДАНО: Seed тестових даних при запуску (лише в режимі Development)
-if (app.Environment.IsDevelopment())
+// Seed початкових даних при запуску, щоб дефолтний адмін був доступний на новій БД.
+using (var scope = app.Services.CreateScope())
 {
-    using (var scope = app.Services.CreateScope())
-    {
-        var seedService = scope.ServiceProvider.GetRequiredService<SeedService>();
-        await seedService.SeedAsync();
-    }
+    var seedService = scope.ServiceProvider.GetRequiredService<SeedService>();
+    await seedService.SeedAsync();
 }
 
 // ДОДАНО: Middleware для глобального перехоплення помилок
