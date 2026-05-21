@@ -31,12 +31,12 @@ const profileTab = document.getElementById('profileTab');
 navHomeBtn?.addEventListener('click', () => switchTab('home'));
 navProfileBtn?.addEventListener('click', () => switchTab('profile'));
 
-loginForm.addEventListener('submit', handleLogin);
-registerForm.addEventListener('submit', handleRegister);
-meButton.addEventListener('click', loadCurrentUser);
-logoutButton.addEventListener('click', logout);
-searchForm.addEventListener('submit', handleSearch);
-closeBtn.addEventListener('click', closeModal);
+loginForm?.addEventListener('submit', handleLogin);
+registerForm?.addEventListener('submit', handleRegister);
+meButton?.addEventListener('click', loadCurrentUser);
+logoutButton?.addEventListener('click', logout);
+searchForm?.addEventListener('submit', handleSearch);
+closeBtn?.addEventListener('click', closeModal);
 window.addEventListener('click', (e) => {
     if (e.target === modal) closeModal();
 });
@@ -172,6 +172,7 @@ async function handleSearch(e) {
 
 async function handleLogin(e) {
     e.preventDefault();
+    console.log('handleLogin invoked');
     const payload = {
         email: document.getElementById('loginEmail').value,
         password: document.getElementById('loginPassword').value
@@ -191,6 +192,7 @@ async function handleRegister(e) {
 
 async function authenticate(endpoint, payload, successMessage) {
     showAuthMessage('');
+    console.log('authenticate called', endpoint, payload);
     try {
         const response = await fetch(`${API_BASE_URL}${endpoint}`, {
             method: 'POST',
@@ -198,7 +200,17 @@ async function authenticate(endpoint, payload, successMessage) {
             body: JSON.stringify(payload)
         });
 
-        const data = await response.json();
+        let data;
+        try {
+            data = await response.json();
+        } catch (jsonErr) {
+            console.error('Failed to parse JSON from authenticate response', jsonErr);
+            const text = await response.text();
+            console.error('Response text:', text);
+            throw new Error('Invalid server response');
+        }
+
+        console.log('authenticate response', response.status, data);
 
         if (!response.ok) throw new Error(data?.error || 'Помилка авторизації');
 
@@ -327,6 +339,16 @@ function updateAuthBadge(isAuthenticated, username = '') {
         if (adminStatusGroup) adminStatusGroup.style.display = 'none';
         if (createCatSection) createCatSection.style.display = 'none';
     }
+}
+
+function showAuthMessage(message = '', isError = false) {
+    if (!authMessage) {
+        console.warn('authMessage element not found');
+        return;
+    }
+    authMessage.textContent = message;
+    authMessage.style.display = message ? 'block' : 'none';
+    authMessage.style.color = isError ? '#dc2626' : '#059669';
 }
 
 async function loadCategories() {
