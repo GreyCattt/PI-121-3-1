@@ -1,6 +1,8 @@
 const API_BASE_URL = '/api';
 const TOKEN_STORAGE_KEY = 'auction.jwt';
 let currentUserRole = 'Unregistered';
+let currentUserProfile = null;
+let categoriesCache = [];
 
 // DOM елементи
 const loginForm = document.getElementById('loginForm');
@@ -190,6 +192,7 @@ async function authenticate(endpoint, payload, successMessage) {
 async function loadCurrentUser() {
     const token = getToken();
     if (!token) {
+        currentUserProfile = null;
         currentUserOutput.innerHTML = 'Користувач не авторизований';
         updateAuthBadge(false);
         return;
@@ -204,6 +207,7 @@ async function loadCurrentUser() {
 
         if (!response.ok) throw new Error(data?.error || 'Не вдалося отримати профіль');
 
+        currentUserProfile = data;
         currentUserOutput.innerHTML = `
             <div style="background: #1e293b; padding: 15px; border-radius: 8px;">
                 <p style="margin-bottom: 8px;"><strong>👤 Ім'я:</strong> ${escapeHtml(data.username)}</p>
@@ -213,6 +217,7 @@ async function loadCurrentUser() {
         `;
         updateAuthBadge(true, data);
     } catch (error) {
+        currentUserProfile = null;
         currentUserOutput.innerHTML = `❌ ${error.message}`;
         updateAuthBadge(false);
     }
@@ -224,6 +229,7 @@ function initializeAuthState() {
         tokenOutput.value = token;
         loadCurrentUser();
     } else {
+        currentUserProfile = null;
         tokenOutput.value = '';
         currentUserOutput.innerHTML = 'Користувач не авторизований';
         updateAuthBadge(false);
@@ -232,6 +238,7 @@ function initializeAuthState() {
 
 function logout() {
     localStorage.removeItem(TOKEN_STORAGE_KEY);
+    currentUserProfile = null;
     tokenOutput.value = '';
     currentUserOutput.innerHTML = 'Користувач не авторизований';
     showAuthMessage('Вихід виконано');
@@ -302,17 +309,16 @@ async function loadCategories() {
     try {
         const res = await fetch(`${API_BASE_URL}/categories`);
         const categories = await res.json();
+        categoriesCache = Array.isArray(categories) ? categories : [];
 
         const searchSelect = document.getElementById('categoryId');
         const createSelect = document.getElementById('newLotCategory');
 
-        let optionsHtml = '<option value="">-- Оберіть категорію --</option>';
-        categories.forEach(c => {
-            optionsHtml += `<option value="${c.id}">${escapeHtml(c.name)}</option>`;
-        });
+        const searchOptionsHtml = buildCategoryOptions(null, '-- Всі категорії --');
+        const formOptionsHtml = buildCategoryOptions(null, '-- Оберіть категорію --');
 
-        if (searchSelect) searchSelect.innerHTML = optionsHtml;
-        if (createSelect) createSelect.innerHTML = optionsHtml;
+        if (searchSelect) searchSelect.innerHTML = searchOptionsHtml;
+        if (createSelect) createSelect.innerHTML = formOptionsHtml;
     } catch (e) {
         console.error('Не вдалося завантажити категорії', e);
     }
@@ -407,6 +413,8 @@ function showEditForm(e, lotJsonStr) {
     e.stopPropagation();
     const lot = JSON.parse(decodeURIComponent(lotJsonStr));
     const modalBody = document.getElementById('modalBody');
+    const startValue = toDateTimeLocalValue(lot.startTime);
+    const endValue = toDateTimeLocalValue(lot.endTime);
 
     const statusMap = { 'Pending': 0, 'Active': 1, 'Cancelled': 2, 'Sold': 3, 'NotSold': 4 };
     const currentStatusVal = statusMap[lot.status] ?? 0;
@@ -422,9 +430,27 @@ function showEditForm(e, lotJsonStr) {
                 <label>Опис:</label>
                 <textarea id="editLotDesc" class="input-field" required>${escapeHtml(lot.description)}</textarea>
             </div>
-            <div class="form-group">
-                <label>Стартова ціна:</label>
-                <input type="number" id="editLotPrice" class="input-field" value="${lot.startingPrice}" required min="1">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Стартова ціна:</label>
+                    <input type="number" id="editLotPrice" class="input-field" value="${lot.startingPrice}" required min="1">
+                </div>
+                <div class="form-group">
+                    <label>Категорія:</label>
+                    <select id="editLotCategory" class="input-field" required>
+                        ${buildCategoryOptions(lot.categoryId, '-- Оберіть категорію --')}
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Час початку:</label>
+                    <input type="datetime-local" id="editLotStart" class="input-field" value="${startValue}" required>
+                </div>
+                <div class="form-group">
+                    <label>Час завершення:</label>
+                    <input type="datetime-local" id="editLotEnd" class="input-field" value="${endValue}" required>
+                </div>
             </div>
             <div class="form-group">
                 <label>Статус:</label>
@@ -449,9 +475,9 @@ function showEditForm(e, lotJsonStr) {
             description: document.getElementById('editLotDesc').value,
             startingPrice: parseFloat(document.getElementById('editLotPrice').value),
             status: parseInt(document.getElementById('editLotStatus').value, 10),
-            categoryId: lot.categoryId,
-            startTime: lot.startTime,
-            endTime: lot.endTime
+            categoryId: parseInt(document.getElementById('editLotCategory').value, 10),
+            startTime: new Date(document.getElementById('editLotStart').value).toISOString(),
+            endTime: new Date(document.getElementById('editLotEnd').value).toISOString()
         };
 
         try {
@@ -477,6 +503,7 @@ function showEditForm(e, lotJsonStr) {
 function showLotDetails(lot) {
     const modalBody = document.getElementById('modalBody');
     const statusLabel = formatStatus(lot.status);
+    const actionHtml = renderLotActions(lot);
 
     modalBody.innerHTML = `
         <h2 class="modal-title">${escapeHtml(lot.title)}</h2>
@@ -518,13 +545,146 @@ function showLotDetails(lot) {
             <div class="modal-label">ID лота:</div>
             <div class="modal-value">#${lot.id}</div>
         </div>
+        ${actionHtml}
     `;
 
     modal.style.display = 'flex';
+    attachLotModalActions(lot);
 }
 
 function closeModal() {
     modal.style.display = 'none';
+}
+
+function renderLotActions(lot) {
+    const canBid = canPlaceBid(lot);
+    const canApprove = canApproveLot(lot);
+
+    if (!canBid && !canApprove) {
+        return currentUserProfile
+            ? `<div class="lot-actions-note">Додаткових дій для цього лота немає.</div>`
+            : `<div class="lot-actions-note">Увійдіть, щоб робити ставки або керувати лотами.</div>`;
+    }
+
+    const minBid = Number(lot.currentPrice || lot.startingPrice || 0) + 1;
+
+    return `
+        <div class="lot-actions">
+            ${canBid ? `
+                <form id="bidForm" class="lot-action-card">
+                    <h3>Зробити ставку</h3>
+                    <p class="lot-action-note">Мінімальна ставка: ${formatCurrency(minBid)}</p>
+                    <label class="form-group">
+                        <span class="form-label-inline">Сума ставки</span>
+                        <input type="number" id="bidAmount" class="input-field" min="${minBid}" step="0.01" value="${minBid}" required>
+                    </label>
+                    <button type="submit" class="btn btn-primary btn-full">Підтвердити ставку</button>
+                </form>
+            ` : ''}
+            ${canApprove ? `
+                <div class="lot-action-card">
+                    <h3>Керування лотом</h3>
+                    <p class="lot-action-note">Лот очікує підтвердження.</p>
+                    <button type="button" id="approveLotButton" class="btn btn-secondary btn-full">Підтвердити лот</button>
+                </div>
+            ` : ''}
+        </div>
+    `;
+}
+
+function attachLotModalActions(lot) {
+    const bidForm = document.getElementById('bidForm');
+    if (bidForm) {
+        bidForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const amount = parseFloat(document.getElementById('bidAmount').value);
+            try {
+                const response = await fetch(`${API_BASE_URL}/auction/bids`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getToken()}`
+                    },
+                    body: JSON.stringify({ lotId: lot.id, amount })
+                });
+
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data?.message || data?.error || 'Не вдалося прийняти ставку');
+                }
+
+                alert(data?.message || 'Ставку успішно прийнято!');
+                closeModal();
+                handleSearch(new Event('submit'));
+            } catch (error) {
+                alert(`Помилка ставки: ${error.message}`);
+            }
+        });
+    }
+
+    const approveButton = document.getElementById('approveLotButton');
+    if (approveButton) {
+        approveButton.addEventListener('click', async () => {
+            if (!currentUserProfile?.id) {
+                alert('Не вдалося визначити поточного користувача.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/lots/${lot.id}/approve?managerId=${currentUserProfile.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(await response.text());
+                }
+
+                alert('Лот підтверджено');
+                closeModal();
+                handleSearch(new Event('submit'));
+            } catch (error) {
+                alert(`Помилка підтвердження: ${error.message}`);
+            }
+        });
+    }
+}
+
+function canPlaceBid(lot) {
+    return Boolean(
+        currentUserProfile &&
+        (currentUserRole === 'Registered' || currentUserRole === 'Admin') &&
+        lot.status === 'Active' &&
+        currentUserProfile.username !== lot.sellerUsername
+    );
+}
+
+function canApproveLot(lot) {
+    return Boolean(
+        currentUserProfile &&
+        (currentUserRole === 'Admin' || currentUserRole === 'Manager') &&
+        lot.status === 'Pending'
+    );
+}
+
+function buildCategoryOptions(selectedCategoryId = null, placeholder = '-- Всі категорії --') {
+    let optionsHtml = `<option value="">${placeholder}</option>`;
+
+    categoriesCache.forEach(category => {
+        const isSelected = selectedCategoryId !== null && Number(selectedCategoryId) === Number(category.id);
+        optionsHtml += `<option value="${category.id}" ${isSelected ? 'selected' : ''}>${escapeHtml(category.name)}</option>`;
+    });
+
+    return optionsHtml;
+}
+
+function toDateTimeLocalValue(value) {
+    const date = new Date(value);
+    const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+    return localDate.toISOString().slice(0, 16);
 }
 
 function formatStatus(status) {

@@ -37,6 +37,12 @@ header h1 {
     opacity: 0.9;
 }
 
+.section-note {
+    color: #5a6477;
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
+
 /* Авторизація */
 .auth-section {
     background: rgba(255, 255, 255, 0.92);
@@ -500,6 +506,49 @@ header h1 {
     margin-top: 5px;
 }
 
+.lot-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-top: 22px;
+}
+
+.lot-action-card {
+    border: 1px solid rgba(102, 126, 234, 0.18);
+    background: linear-gradient(180deg, #f9fbff 0%, #eef4ff 100%);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.lot-action-card h3 {
+    color: #1f2a44;
+}
+
+.lot-action-note {
+    color: #5a6477;
+    font-size: 0.95em;
+    line-height: 1.4;
+}
+
+.lot-actions-note {
+    margin-top: 20px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: #f8fbff;
+    color: #51607a;
+    border: 1px dashed rgba(102, 126, 234, 0.25);
+}
+
+.form-label-inline {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+    font-size: 0.95em;
+}
+
 /* Адаптивність */
 @media (max-width: 768px) {
     header h1 {
@@ -516,6 +565,10 @@ header h1 {
     }
 
     .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .lot-actions {
         grid-template-columns: 1fr;
     }
 

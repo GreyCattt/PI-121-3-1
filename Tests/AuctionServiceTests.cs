@@ -62,7 +62,7 @@ namespace Tests
             var user = new User { Id = 1, Role = UserRole.Registered };
             var existingBids = new List<Bid>
             {
-                new Bid { Amount = 150m } // Поточна максимальна ставка 150
+                new Bid { LotId = 1, Amount = 150m } // Поточна максимальна ставка 150
             };
 
             mockUoW.Setup(u => u.LotRepository.GetByIdAsync(1)).ReturnsAsync(lot);
