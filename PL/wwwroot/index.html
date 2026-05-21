@@ -4,8 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Internet Auction - Пошук лотів</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏛️ Internet Auction</h1>
+            <p class="subtitle">Пошук та фільтрація лотів</p>
+        </header>
 
-        <!-- Авторизація -->
         <section class="auth-section">
             <div class="auth-header">
                 <div>
@@ -62,56 +69,28 @@
             </div>
 
             <div class="profile-panel">
-                <h3>Поточний користувач</h3>
-                <pre id="currentUserOutput">Ще не завантажено</pre>
+                <h3>Мій профіль</h3>
+                <div id="currentUserOutput">Ще не завантажено</div>
             </div>
         </section>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-    <div class="container">
-        <!-- Заголовок -->
-        <header>
-            <h1>🏛️ Internet Auction</h1>
-            <p class="subtitle">Пошук та фільтрація лотів</p>
-        </header>
 
-        <!-- Форма пошуку й фільтрів -->
         <section class="search-section">
-
             <h2>Пошук лотів</h2>
             <form id="searchForm" class="search-form">
                 <div class="form-group">
                     <label for="searchQuery">Пошук по назві:</label>
-                    <input 
-                        type="text" 
-                        id="searchQuery" 
-                        placeholder="Напр., iPhone, золотий годинник..." 
-                        class="input-field">
+                    <input type="text" id="searchQuery" placeholder="Напр., iPhone, золотий годинник..." class="input-field">
                 </div>
-
                 <div class="form-row">
                     <div class="form-group">
                         <label for="minPrice">Мінімальна ціна (₴):</label>
-                        <input 
-                            type="number" 
-                            id="minPrice" 
-                            placeholder="0" 
-                            min="0" 
-                            class="input-field">
+                        <input type="number" id="minPrice" placeholder="0" min="0" class="input-field">
                     </div>
-
                     <div class="form-group">
                         <label for="maxPrice">Максимальна ціна (₴):</label>
-                        <input 
-                            type="number" 
-                            id="maxPrice" 
-                            placeholder="999999" 
-                            min="0" 
-                            class="input-field">
+                        <input type="number" id="maxPrice" placeholder="999999" min="0" class="input-field">
                     </div>
                 </div>
-
                 <div class="form-row">
                     <div class="form-group">
                         <label for="status">Статус лота:</label>
@@ -124,89 +103,88 @@
                             <option value="Cancelled">Скасовано</option>
                         </select>
                     </div>
-
                     <div class="form-group">
                         <label for="categoryId">Категорія:</label>
                         <select id="categoryId" class="input-field">
                             <option value="">-- Всі категорії --</option>
-                            <option value="1">Electronics</option>
-                            <option value="2">Phones</option>
-                            <option value="3">Watches</option>
                         </select>
                     </div>
                 </div>
-
                 <div class="button-group">
                     <button type="submit" class="btn btn-primary">🔍 Пошук</button>
                     <button type="reset" class="btn btn-secondary">🔄 Скинути</button>
                 </div>
             </form>
         </section>
-<section class="search-section" id="createLotSection" style="display: none;">
-    <h2>➕ Створити лот</h2>
-    <form id="createLotForm" class="search-form">
-        <div class="form-group">
-            <label>Назва лота:</label>
-            <input type="text" id="newLotTitle" class="input-field" required>
-        </div>
-        <div class="form-group">
-            <label>Опис:</label>
-            <textarea id="newLotDesc" class="input-field" required></textarea>
-        </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label>Початкова ціна (₴):</label>
-                <input type="number" id="newLotPrice" class="input-field" required min="1">
-            </div>
-            <div class="form-group">
-                <label>Категорія (Оберіть зі списку):</label>
-                <select id="newLotCategory" class="input-field" required></select>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label>Час початку:</label>
-                <input type="datetime-local" id="newLotStart" class="input-field" required>
-            </div>
-            <div class="form-group">
-                <label>Час завершення:</label>
-                <input type="datetime-local" id="newLotEnd" class="input-field" required>
-            </div>
-        </div>
-        
-        <div class="form-group" id="adminStatusGroup" style="display:none;">
-            <label>Статус (Лише для Адміністрації):</label>
-            <select id="newLotStatus" class="input-field">
-                <option value="0">Pending (Очікує)</option>
-                <option value="1">Active (Активний)</option>
-            </select>
-        </div>
-        
-        <button type="submit" class="btn btn-primary">Створити лот</button>
-    </form>
-</section>
-        <!-- Статус завантаження -->
+
+        <section class="search-section" id="createLotSection" style="display: none;">
+            <h2>➕ Створити лот</h2>
+            <form id="createLotForm" class="search-form">
+                <div class="form-group">
+                    <label>Назва лота:</label>
+                    <input type="text" id="newLotTitle" class="input-field" required>
+                </div>
+                <div class="form-group">
+                    <label>Опис:</label>
+                    <textarea id="newLotDesc" class="input-field" required></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Початкова ціна (₴):</label>
+                        <input type="number" id="newLotPrice" class="input-field" required min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Категорія (Оберіть зі списку):</label>
+                        <select id="newLotCategory" class="input-field" required></select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Час початку:</label>
+                        <input type="datetime-local" id="newLotStart" class="input-field" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Час завершення:</label>
+                        <input type="datetime-local" id="newLotEnd" class="input-field" required>
+                    </div>
+                </div>
+                <div class="form-group" id="adminStatusGroup" style="display:none;">
+                    <label>Статус (Лише для Адміністрації):</label>
+                    <select id="newLotStatus" class="input-field">
+                        <option value="0">Pending (Очікує)</option>
+                        <option value="1">Active (Активний)</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Створити лот</button>
+            </form>
+        </section>
+
+        <section class="search-section" id="createCategorySection" style="display: none;">
+            <h2>📁 Створити категорію</h2>
+            <form id="createCategoryForm" class="search-form">
+                <div class="form-group">
+                    <label>Назва категорії:</label>
+                    <input type="text" id="newCategoryName" class="input-field" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Створити</button>
+            </form>
+        </section>
+
         <div id="loading" class="loading" style="display: none;">
             ⏳ Завантаження лотів...
         </div>
 
-        <!-- Помилка -->
         <div id="error" class="error-message" style="display: none;"></div>
 
-        <!-- Список лотів -->
         <section class="results-section">
             <h2>Результати пошуку</h2>
-            <div id="lotsList" class="lots-grid">
-                <!-- Лоти будуть додані JavaScript -->
-            </div>
-            
+            <div id="lotsList" class="lots-grid"></div>
             <div id="noResults" class="no-results" style="display: none;">
                 <p>❌ Лотів не знайдено. Спробуй змінити критерії пошуку.</p>
             </div>
         </section>
     </div>
 
-    <!-- Модальне вікно для деталей лота -->
     <div id="lotModal" class="modal" style="display: none;">
         <div class="modal-content">
             <span class="close">&times;</span>

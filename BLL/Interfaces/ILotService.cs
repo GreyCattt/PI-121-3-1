@@ -11,16 +11,12 @@ namespace BLL.Interfaces
         Task<LotDto> GetLotByIdAsync(int id);
         Task<int> CreateLotAsync(LotCreateDto lotDto);
         Task ApproveLotAsync(int lotId, int managerId);
+        Task UpdateLotAsync(int id, LotUpdateDto lotDto);
         Task DeleteLotAsync(int id);
-        
+
         /// <summary>
         /// Пошук і фільтрація лотів за критеріями
         /// </summary>
-        /// <param name="searchQuery">Пошук по назві лота</param>
-        /// <param name="categoryId">Фільтр по категорії (опціонально)</param>
-        /// <param name="status">Фільтр по статусу (опціонально)</param>
-        /// <param name="minPrice">Мінімальна стартова ціна (опціонально)</param>
-        /// <param name="maxPrice">Максимальна стартова ціна (опціонально)</param>
         Task<IEnumerable<LotDto>> SearchAndFilterLotsAsync(
             string? searchQuery = null,
             int? categoryId = null,
