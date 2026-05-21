@@ -21,7 +21,16 @@ const noResultsElement = document.getElementById('noResults');
 const modal = document.getElementById('lotModal');
 const closeBtn = document.querySelector('.close');
 
+// Tabs
+const navHomeBtn = document.getElementById('navHomeBtn');
+const navProfileBtn = document.getElementById('navProfileBtn');
+const homeTab = document.getElementById('homeTab');
+const profileTab = document.getElementById('profileTab');
+
 // Слухачі подій
+navHomeBtn?.addEventListener('click', () => switchTab('home'));
+navProfileBtn?.addEventListener('click', () => switchTab('profile'));
+
 loginForm.addEventListener('submit', handleLogin);
 registerForm.addEventListener('submit', handleRegister);
 meButton.addEventListener('click', loadCurrentUser);
@@ -31,6 +40,20 @@ closeBtn.addEventListener('click', closeModal);
 window.addEventListener('click', (e) => {
     if (e.target === modal) closeModal();
 });
+
+function switchTab(tab) {
+    if (tab === 'home') {
+        homeTab.style.display = 'block';
+        profileTab.style.display = 'none';
+        navHomeBtn.classList.add('active');
+        navProfileBtn.classList.remove('active');
+    } else {
+        homeTab.style.display = 'none';
+        profileTab.style.display = 'block';
+        navHomeBtn.classList.remove('active');
+        navProfileBtn.classList.add('active');
+    }
+}
 
 document.getElementById('createLotForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -64,6 +87,7 @@ document.getElementById('createLotForm')?.addEventListener('submit', async (e) =
         }
 
         alert('Лот успішно створено!');
+        document.getElementById('createLotForm').reset();
         handleSearch(new Event('submit'));
     } catch (error) {
         alert(`Помилка створення: ${error.message}`);
@@ -324,21 +348,6 @@ async function loadCategories() {
     }
 }
 
-function showAuthMessage(message, isError = false) {
-    if (!message) {
-        authMessage.style.display = 'none';
-        authMessage.textContent = '';
-        authMessage.style.borderLeftColor = '#667eea';
-        return;
-    }
-
-    authMessage.textContent = message;
-    authMessage.style.display = 'block';
-    authMessage.style.borderLeftColor = isError ? '#c33' : '#667eea';
-    authMessage.style.color = isError ? '#8d1f1f' : '#243b73';
-    authMessage.style.background = isError ? '#fff1f1' : '#eef4ff';
-}
-
 function displayLots(lots) {
     lotsList.innerHTML = '';
     lots.forEach(lot => {
@@ -408,6 +417,42 @@ async function deleteLot(e, lotId) {
         alert('Помилка видалення.');
     }
 }
+
+// Глобальна функція для швидкої зміни статусу в модальному вікні
+window.quickChangeStatus = async function (e, lotJsonStr, newStatus) {
+    e.stopPropagation();
+    if (!confirm('Ви впевнені, що хочете змінити статус цього лота?')) return;
+
+    const lot = JSON.parse(decodeURIComponent(lotJsonStr));
+    const payload = {
+        title: lot.title,
+        description: lot.description,
+        startingPrice: lot.startingPrice,
+        status: newStatus,
+        categoryId: lot.categoryId,
+        startTime: lot.startTime,
+        endTime: lot.endTime
+    };
+
+    try {
+        const res = await fetch(`${API_BASE_URL}/lots/${lot.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getToken()}`
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) throw new Error(await res.text());
+
+        closeModal();
+        handleSearch(new Event('submit'));
+        alert('Статус успішно змінено!');
+    } catch (err) {
+        alert("Помилка: " + err.message);
+    }
+};
 
 function showEditForm(e, lotJsonStr) {
     e.stopPropagation();
@@ -559,37 +604,56 @@ function closeModal() {
 function renderLotActions(lot) {
     const canBid = canPlaceBid(lot);
     const canApprove = canApproveLot(lot);
+    const canChangeStatus = currentUserProfile && (currentUserRole === 'Admin' || currentUserRole === 'Manager');
 
-    if (!canBid && !canApprove) {
+    if (!canBid && !canApprove && !canChangeStatus) {
         return currentUserProfile
             ? `<div class="lot-actions-note">Додаткових дій для цього лота немає.</div>`
             : `<div class="lot-actions-note">Увійдіть, щоб робити ставки або керувати лотами.</div>`;
     }
 
     const minBid = Number(lot.currentPrice || lot.startingPrice || 0) + 1;
+    let actionsHtml = `<div class="lot-actions">`;
 
-    return `
-        <div class="lot-actions">
-            ${canBid ? `
-                <form id="bidForm" class="lot-action-card">
-                    <h3>Зробити ставку</h3>
-                    <p class="lot-action-note">Мінімальна ставка: ${formatCurrency(minBid)}</p>
-                    <label class="form-group">
-                        <span class="form-label-inline">Сума ставки</span>
-                        <input type="number" id="bidAmount" class="input-field" min="${minBid}" step="0.01" value="${minBid}" required>
-                    </label>
-                    <button type="submit" class="btn btn-primary btn-full">Підтвердити ставку</button>
-                </form>
-            ` : ''}
-            ${canApprove ? `
-                <div class="lot-action-card">
-                    <h3>Керування лотом</h3>
-                    <p class="lot-action-note">Лот очікує підтвердження.</p>
-                    <button type="button" id="approveLotButton" class="btn btn-secondary btn-full">Підтвердити лот</button>
+    if (canBid) {
+        actionsHtml += `
+            <form id="bidForm" class="lot-action-card">
+                <h3>Зробити ставку</h3>
+                <p class="lot-action-note">Мінімальна ставка: ${formatCurrency(minBid)}</p>
+                <label class="form-group">
+                    <span class="form-label-inline">Сума ставки</span>
+                    <input type="number" id="bidAmount" class="input-field" min="${minBid}" step="0.01" value="${minBid}" required>
+                </label>
+                <button type="submit" class="btn btn-primary btn-full">Підтвердити ставку</button>
+            </form>
+        `;
+    }
+
+    if (canApprove) {
+        actionsHtml += `
+            <div class="lot-action-card">
+                <h3>Підтвердження</h3>
+                <p class="lot-action-note">Лот очікує підтвердження менеджером.</p>
+                <button type="button" id="approveLotButton" class="btn btn-secondary btn-full">Підтвердити лот</button>
+            </div>
+        `;
+    }
+
+    if (canChangeStatus) {
+        const lotJson = encodeURIComponent(JSON.stringify(lot));
+        actionsHtml += `
+            <div class="lot-action-card">
+                <h3>Швидка зміна статусу</h3>
+                <div style="display: flex; gap: 10px; margin-top: auto;">
+                    <button onclick="window.quickChangeStatus(event, '${lotJson}', 3)" class="btn btn-primary" style="flex: 1;">✅ Продано</button>
+                    <button onclick="window.quickChangeStatus(event, '${lotJson}', 2)" class="btn btn-danger" style="flex: 1;">🚫 Скасувати</button>
                 </div>
-            ` : ''}
-        </div>
-    `;
+            </div>
+        `;
+    }
+
+    actionsHtml += `</div>`;
+    return actionsHtml;
 }
 
 function attachLotModalActions(lot) {

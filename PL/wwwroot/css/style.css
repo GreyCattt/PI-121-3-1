@@ -18,24 +18,54 @@ body {
     padding: 0 20px;
 }
 
-/* Заголовок */
+/* Заголовок та Навігація */
 header {
     text-align: center;
     color: white;
-    margin-bottom: 40px;
-    padding: 30px 0;
+    margin-bottom: 20px;
+    padding: 30px 0 10px 0;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-header h1 {
-    font-size: 2.5em;
-    margin-bottom: 10px;
-}
+    header h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+    }
 
 .subtitle {
     font-size: 1.2em;
     opacity: 0.9;
+    margin-bottom: 20px;
 }
+
+.top-nav {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.nav-btn {
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255,255,255,0.6);
+    color: white;
+    padding: 10px 25px;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .nav-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    .nav-btn.active {
+        background: white;
+        color: #667eea;
+        border-color: white;
+    }
 
 .section-note {
     color: #5a6477;
@@ -61,14 +91,14 @@ header h1 {
     margin-bottom: 18px;
 }
 
-.auth-header h2 {
-    color: #1f2a44;
-    margin-bottom: 6px;
-}
+    .auth-header h2 {
+        color: #1f2a44;
+        margin-bottom: 6px;
+    }
 
-.auth-header p {
-    color: #5a6477;
-}
+    .auth-header p {
+        color: #5a6477;
+    }
 
 .auth-grid {
     display: grid;
@@ -86,9 +116,9 @@ header h1 {
     gap: 12px;
 }
 
-.auth-card h3 {
-    color: #1f2a44;
-}
+    .auth-card h3 {
+        color: #1f2a44;
+    }
 
 .auth-tools {
     display: flex;
@@ -107,19 +137,19 @@ header h1 {
     color: #667eea;
 }
 
-.btn-ghost:hover {
-    background: rgba(102, 126, 234, 0.08);
-}
+    .btn-ghost:hover {
+        background: rgba(102, 126, 234, 0.08);
+    }
 
 .btn-danger {
     background: linear-gradient(135deg, #ff6b6b 0%, #c44569 100%);
     color: white;
 }
 
-.btn-danger:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(196, 69, 105, 0.28);
-}
+    .btn-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(196, 69, 105, 0.28);
+    }
 
 .auth-message {
     margin-top: 16px;
@@ -198,11 +228,11 @@ header h1 {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
-.search-section h2 {
-    color: #667eea;
-    margin-bottom: 20px;
-    font-size: 1.8em;
-}
+    .search-section h2 {
+        color: #667eea;
+        margin-bottom: 10px;
+        font-size: 1.8em;
+    }
 
 .search-form {
     display: flex;
@@ -236,11 +266,11 @@ header h1 {
     transition: all 0.3s ease;
 }
 
-.input-field:focus {
-    outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 8px rgba(102, 126, 234, 0.2);
-}
+    .input-field:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 8px rgba(102, 126, 234, 0.2);
+    }
 
 .button-group {
     display: flex;
@@ -264,19 +294,19 @@ header h1 {
     color: white;
 }
 
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-}
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
 
 .btn-secondary {
     background: #f0f0f0;
     color: #333;
 }
 
-.btn-secondary:hover {
-    background: #e0e0e0;
-}
+    .btn-secondary:hover {
+        background: #e0e0e0;
+    }
 
 /* Статус завантаження */
 .loading {
@@ -307,11 +337,11 @@ header h1 {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
-.results-section h2 {
-    color: #667eea;
-    margin-bottom: 20px;
-    font-size: 1.8em;
-}
+    .results-section h2 {
+        color: #667eea;
+        margin-bottom: 20px;
+        font-size: 1.8em;
+    }
 
 /* Grid лотів */
 .lots-grid {
@@ -330,11 +360,11 @@ header h1 {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
-.lot-card:hover {
-    transform: translateY(-5px);
-    border-color: #667eea;
-    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
-}
+    .lot-card:hover {
+        transform: translateY(-5px);
+        border-color: #667eea;
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+    }
 
 .lot-card-header {
     display: flex;
@@ -480,9 +510,9 @@ header h1 {
     transition: color 0.3s;
 }
 
-.close:hover {
-    color: #000;
-}
+    .close:hover {
+        color: #000;
+    }
 
 .modal-title {
     color: #667eea;
@@ -523,9 +553,9 @@ header h1 {
     gap: 12px;
 }
 
-.lot-action-card h3 {
-    color: #1f2a44;
-}
+    .lot-action-card h3 {
+        color: #1f2a44;
+    }
 
 .lot-action-note {
     color: #5a6477;
@@ -553,6 +583,12 @@ header h1 {
 @media (max-width: 768px) {
     header h1 {
         font-size: 2em;
+    }
+
+    .top-nav {
+        flex-direction: column;
+        gap: 10px;
+        padding: 0 20px;
     }
 
     .auth-header {

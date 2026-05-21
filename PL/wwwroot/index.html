@@ -11,181 +11,189 @@
         <header>
             <h1>🏛️ Internet Auction</h1>
             <p class="subtitle">Пошук, ставки та керування лотами</p>
+
+            <nav class="top-nav">
+                <button id="navHomeBtn" class="nav-btn active">Головна (Лоти)</button>
+                <button id="navProfileBtn" class="nav-btn">Мій Профіль</button>
+            </nav>
         </header>
 
-        <section class="auth-section">
-            <div class="auth-header">
-                <div>
-                    <h2>Авторизація</h2>
-                    <p>Увійди або зареєструйся, щоб працювати з JWT-захищеними ендпоінтами.</p>
+        <div id="profileTab" style="display: none;">
+            <section class="auth-section">
+                <div class="auth-header">
+                    <div>
+                        <h2>Авторизація та Профіль</h2>
+                        <p>Керуй своїм обліковим записом тут.</p>
+                    </div>
+                    <div class="auth-status">
+                        <span id="authStatusBadge" class="status-pill status-guest">Guest</span>
+                    </div>
                 </div>
-                <div class="auth-status">
-                    <span id="authStatusBadge" class="status-pill status-guest">Guest</span>
-                </div>
-            </div>
 
-            <div class="auth-grid">
-                <form id="loginForm" class="auth-card">
-                    <h3>Вхід</h3>
-                    <div class="form-group">
-                        <label for="loginEmail">Email</label>
-                        <input type="email" id="loginEmail" class="input-field" placeholder="admin@auction.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="loginPassword">Пароль</label>
-                        <input type="password" id="loginPassword" class="input-field" placeholder="Admin123!" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-full">Увійти</button>
-                </form>
+                <div class="auth-grid">
+                    <form id="loginForm" class="auth-card">
+                        <h3>Вхід</h3>
+                        <div class="form-group">
+                            <label for="loginEmail">Email</label>
+                            <input type="email" id="loginEmail" class="input-field" placeholder="admin@auction.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Пароль</label>
+                            <input type="password" id="loginPassword" class="input-field" placeholder="Admin123!" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">Увійти</button>
+                    </form>
 
-                <form id="registerForm" class="auth-card">
-                    <h3>Реєстрація</h3>
-                    <div class="form-group">
-                        <label for="registerUsername">Username</label>
-                        <input type="text" id="registerUsername" class="input-field" placeholder="buyer1" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="registerEmail">Email</label>
-                        <input type="email" id="registerEmail" class="input-field" placeholder="buyer1@example.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="registerPassword">Пароль</label>
-                        <input type="password" id="registerPassword" class="input-field" placeholder="Buyer123!" required>
-                    </div>
-                    <button type="submit" class="btn btn-secondary btn-full">Зареєструватися</button>
-                </form>
-            </div>
+                    <form id="registerForm" class="auth-card">
+                        <h3>Реєстрація</h3>
+                        <div class="form-group">
+                            <label for="registerUsername">Username</label>
+                            <input type="text" id="registerUsername" class="input-field" placeholder="buyer1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerEmail">Email</label>
+                            <input type="email" id="registerEmail" class="input-field" placeholder="buyer1@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerPassword">Пароль</label>
+                            <input type="password" id="registerPassword" class="input-field" placeholder="Buyer123!" required>
+                        </div>
+                        <button type="submit" class="btn btn-secondary btn-full">Зареєструватися</button>
+                    </form>
+                </div>
 
-            <div class="auth-tools">
-                <button id="meButton" type="button" class="btn btn-ghost">Показати мій профіль</button>
-                <button id="logoutButton" type="button" class="btn btn-danger">Вийти</button>
-            </div>
+                <div class="auth-tools">
+                    <button id="meButton" type="button" class="btn btn-ghost">Оновити дані профілю</button>
+                    <button id="logoutButton" type="button" class="btn btn-danger">Вийти</button>
+                </div>
 
-            <div id="authMessage" class="auth-message" style="display: none;"></div>
+                <div id="authMessage" class="auth-message" style="display: none;"></div>
 
-            <div class="token-panel">
-                <div class="token-label">JWT токен</div>
-                <textarea id="tokenOutput" readonly placeholder="Тут з'явиться токен після логіну або реєстрації"></textarea>
-            </div>
+                <div class="token-panel">
+                    <div class="token-label">JWT токен</div>
+                    <textarea id="tokenOutput" readonly placeholder="Тут з'явиться токен після логіну або реєстрації"></textarea>
+                </div>
 
-            <div class="profile-panel">
-                <h3>Мій профіль</h3>
-                <div id="currentUserOutput">Ще не завантажено</div>
-            </div>
-        </section>
-
-        <section class="search-section">
-            <h2>Пошук лотів</h2>
-            <p class="section-note">Фільтруй лоти, відкривай деталі й працюй з новими діями в модальному вікні.</p>
-            <form id="searchForm" class="search-form">
-                <div class="form-group">
-                    <label for="searchQuery">Пошук по назві:</label>
-                    <input type="text" id="searchQuery" placeholder="Напр., iPhone, золотий годинник..." class="input-field">
+                <div class="profile-panel">
+                    <h3>Дані профілю</h3>
+                    <div id="currentUserOutput">Ще не завантажено</div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="minPrice">Мінімальна ціна (₴):</label>
-                        <input type="number" id="minPrice" placeholder="0" min="0" class="input-field">
-                    </div>
-                    <div class="form-group">
-                        <label for="maxPrice">Максимальна ціна (₴):</label>
-                        <input type="number" id="maxPrice" placeholder="999999" min="0" class="input-field">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="status">Статус лота:</label>
-                        <select id="status" class="input-field">
-                            <option value="">-- Всі --</option>
-                            <option value="Pending">Очікує підтвердження</option>
-                            <option value="Active">Активні торги</option>
-                            <option value="Sold">Продано</option>
-                            <option value="NotSold">Не продано</option>
-                            <option value="Cancelled">Скасовано</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="categoryId">Категорія:</label>
-                        <select id="categoryId" class="input-field">
-                            <option value="">-- Всі категорії --</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="button-group">
-                    <button type="submit" class="btn btn-primary">🔍 Пошук</button>
-                    <button type="reset" class="btn btn-secondary">🔄 Скинути</button>
-                </div>
-            </form>
-        </section>
-
-        <section class="search-section" id="createLotSection" style="display: none;">
-            <h2>➕ Створити лот</h2>
-            <p class="section-note">Доступно для авторизованих користувачів; статус можна задавати адміністрації та менеджерам.</p>
-            <form id="createLotForm" class="search-form">
-                <div class="form-group">
-                    <label>Назва лота:</label>
-                    <input type="text" id="newLotTitle" class="input-field" required>
-                </div>
-                <div class="form-group">
-                    <label>Опис:</label>
-                    <textarea id="newLotDesc" class="input-field" required></textarea>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Початкова ціна (₴):</label>
-                        <input type="number" id="newLotPrice" class="input-field" required min="1">
-                    </div>
-                    <div class="form-group">
-                        <label>Категорія (Оберіть зі списку):</label>
-                        <select id="newLotCategory" class="input-field" required></select>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Час початку:</label>
-                        <input type="datetime-local" id="newLotStart" class="input-field" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Час завершення:</label>
-                        <input type="datetime-local" id="newLotEnd" class="input-field" required>
-                    </div>
-                </div>
-                <div class="form-group" id="adminStatusGroup" style="display:none;">
-                    <label>Статус (Лише для Адміністрації):</label>
-                    <select id="newLotStatus" class="input-field">
-                        <option value="0">Pending (Очікує)</option>
-                        <option value="1">Active (Активний)</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary">Створити лот</button>
-            </form>
-        </section>
-
-        <section class="search-section" id="createCategorySection" style="display: none;">
-            <h2>📁 Створити категорію</h2>
-            <p class="section-note">Цей блок показується лише адміністраторам і менеджерам.</p>
-            <form id="createCategoryForm" class="search-form">
-                <div class="form-group">
-                    <label>Назва категорії:</label>
-                    <input type="text" id="newCategoryName" class="input-field" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Створити</button>
-            </form>
-        </section>
-
-        <div id="loading" class="loading" style="display: none;">
-            ⏳ Завантаження лотів...
+            </section>
         </div>
 
-        <div id="error" class="error-message" style="display: none;"></div>
+        <div id="homeTab">
+            <section class="search-section">
+                <h2>Пошук лотів</h2>
+                <p class="section-note">Фільтруй лоти, відкривай деталі й працюй з новими діями в модальному вікні.</p>
+                <form id="searchForm" class="search-form">
+                    <div class="form-group">
+                        <label for="searchQuery">Пошук по назві:</label>
+                        <input type="text" id="searchQuery" placeholder="Напр., iPhone, золотий годинник..." class="input-field">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="minPrice">Мінімальна ціна (₴):</label>
+                            <input type="number" id="minPrice" placeholder="0" min="0" class="input-field">
+                        </div>
+                        <div class="form-group">
+                            <label for="maxPrice">Максимальна ціна (₴):</label>
+                            <input type="number" id="maxPrice" placeholder="999999" min="0" class="input-field">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="status">Статус лота:</label>
+                            <select id="status" class="input-field">
+                                <option value="">-- Всі --</option>
+                                <option value="Pending">Очікує підтвердження</option>
+                                <option value="Active">Активні торги</option>
+                                <option value="Sold">Продано</option>
+                                <option value="Cancelled">Скасовано</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="categoryId">Категорія:</label>
+                            <select id="categoryId" class="input-field">
+                                <option value="">-- Всі категорії --</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary">🔍 Пошук</button>
+                        <button type="reset" class="btn btn-secondary">🔄 Скинути</button>
+                    </div>
+                </form>
+            </section>
 
-        <section class="results-section">
-            <h2>Результати пошуку</h2>
-            <div id="lotsList" class="lots-grid"></div>
-            <div id="noResults" class="no-results" style="display: none;">
-                <p>❌ Лотів не знайдено. Спробуй змінити критерії пошуку.</p>
+            <section class="search-section" id="createLotSection" style="display: none;">
+                <h2>➕ Створити лот</h2>
+                <p class="section-note">Доступно для авторизованих користувачів; статус можна задавати адміністрації та менеджерам.</p>
+                <form id="createLotForm" class="search-form">
+                    <div class="form-group">
+                        <label>Назва лота:</label>
+                        <input type="text" id="newLotTitle" class="input-field" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Опис:</label>
+                        <textarea id="newLotDesc" class="input-field" required></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Початкова ціна (₴):</label>
+                            <input type="number" id="newLotPrice" class="input-field" required min="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Категорія (Оберіть зі списку):</label>
+                            <select id="newLotCategory" class="input-field" required></select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Час початку:</label>
+                            <input type="datetime-local" id="newLotStart" class="input-field" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Час завершення:</label>
+                            <input type="datetime-local" id="newLotEnd" class="input-field" required>
+                        </div>
+                    </div>
+                    <div class="form-group" id="adminStatusGroup" style="display:none;">
+                        <label>Статус (Лише для Адміністрації):</label>
+                        <select id="newLotStatus" class="input-field">
+                            <option value="0">Pending (Очікує)</option>
+                            <option value="1">Active (Активний)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Створити лот</button>
+                </form>
+            </section>
+
+            <section class="search-section" id="createCategorySection" style="display: none;">
+                <h2>📁 Створити категорію</h2>
+                <p class="section-note">Цей блок показується лише адміністраторам і менеджерам.</p>
+                <form id="createCategoryForm" class="search-form">
+                    <div class="form-group">
+                        <label>Назва категорії:</label>
+                        <input type="text" id="newCategoryName" class="input-field" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Створити</button>
+                </form>
+            </section>
+
+            <div id="loading" class="loading" style="display: none;">
+                ⏳ Завантаження лотів...
             </div>
-        </section>
+
+            <div id="error" class="error-message" style="display: none;"></div>
+
+            <section class="results-section">
+                <h2>Результати пошуку</h2>
+                <div id="lotsList" class="lots-grid"></div>
+                <div id="noResults" class="no-results" style="display: none;">
+                    <p>❌ Лотів не знайдено. Спробуй змінити критерії пошуку.</p>
+                </div>
+            </section>
+        </div>
     </div>
 
     <div id="lotModal" class="modal" style="display: none;">
