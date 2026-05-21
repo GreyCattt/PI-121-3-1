@@ -78,6 +78,7 @@
 
         <!-- Форма пошуку й фільтрів -->
         <section class="search-section">
+
             <h2>Пошук лотів</h2>
             <form id="searchForm" class="search-form">
                 <div class="form-group">
@@ -141,7 +142,49 @@
                 </div>
             </form>
         </section>
-
+<section class="search-section" id="createLotSection" style="display: none;">
+    <h2>➕ Створити лот</h2>
+    <form id="createLotForm" class="search-form">
+        <div class="form-group">
+            <label>Назва лота:</label>
+            <input type="text" id="newLotTitle" class="input-field" required>
+        </div>
+        <div class="form-group">
+            <label>Опис:</label>
+            <textarea id="newLotDesc" class="input-field" required></textarea>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Початкова ціна (₴):</label>
+                <input type="number" id="newLotPrice" class="input-field" required min="1">
+            </div>
+            <div class="form-group">
+                <label>Категорія (Оберіть зі списку):</label>
+                <select id="newLotCategory" class="input-field" required></select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Час початку:</label>
+                <input type="datetime-local" id="newLotStart" class="input-field" required>
+            </div>
+            <div class="form-group">
+                <label>Час завершення:</label>
+                <input type="datetime-local" id="newLotEnd" class="input-field" required>
+            </div>
+        </div>
+        
+        <div class="form-group" id="adminStatusGroup" style="display:none;">
+            <label>Статус (Лише для Адміністрації):</label>
+            <select id="newLotStatus" class="input-field">
+                <option value="0">Pending (Очікує)</option>
+                <option value="1">Active (Активний)</option>
+            </select>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Створити лот</button>
+    </form>
+</section>
         <!-- Статус завантаження -->
         <div id="loading" class="loading" style="display: none;">
             ⏳ Завантаження лотів...

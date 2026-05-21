@@ -123,5 +123,15 @@ namespace BLL.Services
             // Маппуємо в DTO
             return _mapper.Map<IEnumerable<LotDto>>(lots);
         }
+        public async Task DeleteLotAsync(int id)
+        {
+            var lot = await _unitOfWork.LotRepository.GetByIdAsync(id);
+            if (lot == null)
+            throw new EntityNotFoundException("Lot", id);
+
+            _unitOfWork.LotRepository.Delete(lot);
+            await _unitOfWork.SaveChangesAsync();
+        }
     }
+
 }

@@ -19,8 +19,7 @@ namespace BLL
                     src.Bids.Any() ? src.Bids.Max(b => b.Amount) : src.StartingPrice));
 
             // Маппінг LotCreateDto -> Lot (при створенні лота статус Pending за замовчуванням)
-            CreateMap<LotCreateDto, Lot>()
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => LotStatus.Pending));
+            CreateMap<LotCreateDto, Lot>();
 
             // Маппінг Bid -> BidDto
             CreateMap<Bid, BidDto>()

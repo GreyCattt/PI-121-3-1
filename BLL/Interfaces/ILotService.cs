@@ -11,6 +11,7 @@ namespace BLL.Interfaces
         Task<LotDto> GetLotByIdAsync(int id);
         Task<int> CreateLotAsync(LotCreateDto lotDto);
         Task ApproveLotAsync(int lotId, int managerId);
+        Task DeleteLotAsync(int id);
         
         /// <summary>
         /// Пошук і фільтрація лотів за критеріями

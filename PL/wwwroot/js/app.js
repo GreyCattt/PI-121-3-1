@@ -6,6 +6,7 @@
 // API базовий URL
 const API_BASE_URL = '/api';
 const TOKEN_STORAGE_KEY = 'auction.jwt';
+let currentUserRole = 'Unregistered';
 
 // DOM елементи
 const loginForm = document.getElementById('loginForm');
@@ -31,6 +32,43 @@ meButton.addEventListener('click', loadCurrentUser);
 logoutButton.addEventListener('click', logout);
 searchForm.addEventListener('submit', handleSearch);
 closeBtn.addEventListener('click', closeModal);
+document.getElementById('createLotForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const token = getToken();
+
+    const payload = {
+        title: document.getElementById('newLotTitle').value,
+        description: document.getElementById('newLotDesc').value,
+        startingPrice: parseFloat(document.getElementById('newLotPrice').value),
+        categoryId: parseInt(document.getElementById('newLotCategory').value, 10),
+        startTime: new Date(document.getElementById('newLotStart').value).toISOString(),
+        endTime: new Date(document.getElementById('newLotEnd').value).toISOString()
+    };
+
+    if (currentUserRole === 'Admin' || currentUserRole === 'Manager') {
+        payload.status = parseInt(document.getElementById('newLotStatus').value, 10);
+    }
+
+    try {
+        const res = await fetch(`${API_BASE_URL}/lots`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+            throw new Error(await res.text());
+        }
+
+        alert('Лот успішно створено!');
+        handleSearch(new Event('submit'));
+    } catch (error) {
+        alert(`Помилка створення: ${error.message}`);
+    }
+});
 window.addEventListener('click', (e) => {
     if (e.target === modal) closeModal();
 });
@@ -171,7 +209,7 @@ async function loadCurrentUser() {
         }
 
         currentUserOutput.textContent = JSON.stringify(data, null, 2);
-        updateAuthBadge(true, data.username);
+        updateAuthBadge(true, data);
     } catch (error) {
         currentUserOutput.textContent = `❌ ${error.message}`;
         updateAuthBadge(false);
@@ -208,8 +246,52 @@ function getToken() {
 }
 
 function updateAuthBadge(isAuthenticated, username = '') {
+    const displayName = typeof username === 'string'
+        ? username
+        : (username?.username || username?.Username || '');
+
     authStatusBadge.className = `status-pill ${isAuthenticated ? 'status-authenticated' : 'status-guest'}`;
-    authStatusBadge.textContent = isAuthenticated ? `Auth${username ? `: ${username}` : ''}` : 'Guest';
+    authStatusBadge.textContent = isAuthenticated ? `Auth${displayName ? `: ${displayName}` : ''}` : 'Guest';
+
+    const createLotSection = document.getElementById('createLotSection');
+    const adminStatusGroup = document.getElementById('adminStatusGroup');
+
+    if (isAuthenticated && typeof username === 'object' && username) {
+        currentUserRole = username.role || username.Role || 'Unregistered';
+        if (createLotSection) createLotSection.style.display = 'block';
+
+        if (adminStatusGroup) {
+            if (currentUserRole === 'Admin' || currentUserRole === 'Manager') {
+                adminStatusGroup.style.display = 'block';
+            } else {
+                adminStatusGroup.style.display = 'none';
+            }
+        }
+    } else {
+        currentUserRole = 'Unregistered';
+        if (createLotSection) createLotSection.style.display = 'none';
+        if (adminStatusGroup) adminStatusGroup.style.display = 'none';
+    }
+}
+
+async function loadCategories() {
+    try {
+        const res = await fetch(`${API_BASE_URL}/categories`);
+        const categories = await res.json();
+
+        const searchSelect = document.getElementById('categoryId');
+        const createSelect = document.getElementById('newLotCategory');
+
+        let optionsHtml = '<option value="">-- Оберіть категорію --</option>';
+        categories.forEach(c => {
+            optionsHtml += `<option value="${c.id}">${escapeHtml(c.name)}</option>`;
+        });
+
+        if (searchSelect) searchSelect.innerHTML = optionsHtml;
+        if (createSelect) createSelect.innerHTML = optionsHtml;
+    } catch (e) {
+        console.error('Не вдалося завантажити категорії', e);
+    }
 }
 
 function showAuthMessage(message, isError = false) {
@@ -280,7 +362,28 @@ function createLotCard(lot) {
         </div>
     `;
 
+    if (currentUserRole === 'Admin') {
+        card.innerHTML += `<button onclick="deleteLot(event, ${lot.id})" class="btn btn-danger" style="margin-top:10px; width:100%">🗑 Видалити</button>`;
+    }
+
     return card;
+}
+
+async function deleteLot(e, lotId) {
+    e.stopPropagation();
+    if (!confirm('Ви впевнені, що хочете видалити цей лот?')) return;
+
+    try {
+        await fetch(`${API_BASE_URL}/lots/${lotId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${getToken()}`
+            }
+        });
+        handleSearch(new Event('submit'));
+    } catch (err) {
+        alert('Помилка видалення.');
+    }
 }
 
 /**
@@ -390,5 +493,7 @@ function escapeHtml(text) {
 document.addEventListener('DOMContentLoaded', () => {
     // Виконуємо пошук з порожними параметрами (отримаємо всі лоти)
     loadingElement.style.display = 'block';
+    loadCategories();
     handleSearch(new Event('submit'));
 });
+

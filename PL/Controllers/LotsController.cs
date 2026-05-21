@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization; // ДОДАНО ДЛЯ АВТОРИЗАЦІЇ
+using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Security.Claims;
@@ -86,15 +86,20 @@ namespace PL.Controllers
                 return Unauthorized(new { message = "Не вдалося визначити користувача з токена." });
             }
 
+            var userRole = User.FindFirstValue(ClaimTypes.Role);
             var lotDto = new LotCreateDto
             {
-                Title = request.Title,
-                Description = request.Description,
+                 Title = request.Title,
+                 Description = request.Description,
                 StartingPrice = request.StartingPrice,
                 StartTime = request.StartTime,
                 EndTime = request.EndTime,
                 CategoryId = request.CategoryId,
-                SellerId = sellerId.Value
+                SellerId = sellerId.Value,
+                // Звичайні юзери отримують Pending. Адміни/Менеджери можуть задати статус.
+                 Status = ((userRole == "Admin" || userRole == "Manager") && request.Status.HasValue) 
+                ? request.Status.Value 
+                : LotStatus.Pending
             };
 
             var lotId = await _lotService.CreateLotAsync(lotDto);
@@ -115,6 +120,13 @@ namespace PL.Controllers
         {
             var userIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return int.TryParse(userIdValue, out var userId) ? userId : null;
+        }
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteLot(int id)
+        {
+            await _lotService.DeleteLotAsync(id);
+            return NoContent();
         }
     }
 }
