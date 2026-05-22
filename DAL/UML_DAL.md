@@ -1,3 +1,4 @@
+```mermaid
 classDiagram
     direction TB
 
@@ -139,3 +140,4 @@ classDiagram
     Category "many" --> "0..1" Category : ParentCategory (Self-reference)
     Bid "many" --> "1" Lot : зроблена на
     Bid "many" --> "1" User : належить покупцю
+```
