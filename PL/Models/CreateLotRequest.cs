@@ -1,5 +1,4 @@
 using System;
-using DAL.Entities;
 namespace PL.Models
 {
     public class CreateLotRequest
@@ -10,6 +9,6 @@ namespace PL.Models
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public int CategoryId { get; set; }
-        public LotStatus? Status { get; set; }
+        public LotStatusRequest? Status { get; set; }
     }
 }

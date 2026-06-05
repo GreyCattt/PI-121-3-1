@@ -41,6 +41,25 @@ namespace Tests
         }
 
         [Fact]
+        public async Task GetAllLotsAsync_ReturnsMappedDtos()
+        {
+            var mockUoW = new Mock<IUnitOfWork>();
+            var lots = new List<Lot>
+            {
+                new Lot { Id = 1, Title = "Lot 1", Category = new Category(), Seller = new User() },
+                new Lot { Id = 2, Title = "Lot 2", Category = new Category(), Seller = new User() }
+            };
+
+            mockUoW.Setup(u => u.LotRepository.GetAllAsync()).ReturnsAsync(lots);
+
+            var lotService = new LotService(mockUoW.Object, _mapper);
+            var result = await lotService.GetAllLotsAsync();
+
+            Assert.Equal(2, result.Count());
+            Assert.Contains(result, lot => lot.Title == "Lot 1");
+        }
+
+        [Fact]
         public async Task CreateLotAsync_InvalidPrice_ThrowsAuctionValidationException()
         {
             var mockUoW = new Mock<IUnitOfWork>();

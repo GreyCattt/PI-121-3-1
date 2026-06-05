@@ -9,7 +9,7 @@ namespace BLL.Interfaces
     {
         Task<IEnumerable<LotDto>> GetAllLotsAsync();
         Task<LotDto> GetLotByIdAsync(int id);
-        Task<int> CreateLotAsync(LotCreateDto lotDto);
+        Task<int> CreateLotAsync(LotCreateDto lotDto, string? userRole = null);
         Task ApproveLotAsync(int lotId, int managerId);
         Task UpdateLotAsync(int id, LotUpdateDto lotDto);
         Task DeleteLotAsync(int id);

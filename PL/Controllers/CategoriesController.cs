@@ -29,7 +29,7 @@ namespace PL.Controllers
         public async Task<IActionResult> Create([FromBody] CategoryDto request)
         {
             var id = await _categoryService.CreateCategoryAsync(request.Name);
-            return Ok(new { Id = id });
+            return Ok(id);
         }
 
         [HttpDelete("{id}")]

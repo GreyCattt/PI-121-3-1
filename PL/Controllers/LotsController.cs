@@ -76,7 +76,6 @@ namespace PL.Controllers
                 return Unauthorized(new { message = "Не вдалося визначити користувача з токена." });
             }
 
-            var userRole = User.FindFirstValue(ClaimTypes.Role);
             var lotDto = new LotCreateDto
             {
                 Title = request.Title,
@@ -86,12 +85,13 @@ namespace PL.Controllers
                 EndTime = request.EndTime,
                 CategoryId = request.CategoryId,
                 SellerId = sellerId.Value,
-                Status = ((userRole == "Admin" || userRole == "Manager") && request.Status.HasValue)
-                ? request.Status.Value
-                : LotStatus.Pending
+                Status = request.Status.HasValue
+                    ? Enum.Parse<LotStatus>(request.Status.Value.ToString())
+                    : LotStatus.Pending
             };
 
-            var lotId = await _lotService.CreateLotAsync(lotDto);
+            var userRole = User.FindFirstValue(ClaimTypes.Role);
+            var lotId = await _lotService.CreateLotAsync(lotDto, userRole);
             return CreatedAtAction(nameof(GetLotById), new { id = lotId }, lotId);
         }
 
@@ -115,7 +115,7 @@ namespace PL.Controllers
                 StartTime = request.StartTime,
                 EndTime = request.EndTime,
                 CategoryId = request.CategoryId,
-                Status = request.Status
+                Status = Enum.Parse<LotStatus>(request.Status.ToString())
             };
 
             await _lotService.UpdateLotAsync(id, lotDto);

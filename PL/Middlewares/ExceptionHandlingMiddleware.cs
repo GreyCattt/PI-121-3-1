@@ -53,8 +53,16 @@ namespace PL.Middlewares
                     break;
 
                 case UnauthorizedAccessException:
-                    context.Response.StatusCode = (int)HttpStatusCode.Forbidden; // 403
-                    message = "У вас немає прав для виконання цієї дії.";
+                    if (exception.Message.Contains("вже існує", StringComparison.OrdinalIgnoreCase))
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.Conflict; // 409
+                        message = exception.Message;
+                    }
+                    else
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized; // 401
+                        message = exception.Message;
+                    }
                     break;
             }
 

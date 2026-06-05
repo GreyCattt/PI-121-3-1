@@ -38,13 +38,17 @@ namespace BLL.Services
             return _mapper.Map<LotDto>(lot);
         }
 
-        public async Task<int> CreateLotAsync(LotCreateDto lotDto)
+        public async Task<int> CreateLotAsync(LotCreateDto lotDto, string? userRole = null)
         {
             if (lotDto.StartingPrice <= 0)
                 throw new AuctionValidationException("Стартова ціна має бути більшою за нуль.");
 
             if (lotDto.EndTime <= lotDto.StartTime)
                 throw new AuctionValidationException("Час завершення має бути пізнішим за час початку.");
+
+            lotDto.Status = ((userRole == "Admin" || userRole == "Manager") && lotDto.Status != default)
+                ? lotDto.Status
+                : LotStatus.Pending;
 
             var lot = _mapper.Map<Lot>(lotDto);
 
@@ -136,6 +140,15 @@ namespace BLL.Services
             var lot = await _unitOfWork.LotRepository.GetByIdAsync(id);
             if (lot == null)
                 throw new EntityNotFoundException("Lot", id);
+
+            var lotBids = (await _unitOfWork.BidRepository.GetAllAsync())
+                .Where(b => b.LotId == id)
+                .ToList();
+
+            foreach (var bid in lotBids)
+            {
+                _unitOfWork.BidRepository.Delete(bid);
+            }
 
             _unitOfWork.LotRepository.Delete(lot);
             await _unitOfWork.SaveChangesAsync();
