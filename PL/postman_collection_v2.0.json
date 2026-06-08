@@ -3,7 +3,7 @@
     "_postman_id": "8d7b2f9a-collection-0001-v2",
     "name": "AuctionSystem API (v2.0)",
     "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-    "description": "Collection to exercise AuctionSystem API via Postman. The API runs on http://localhost:5184 in development; token is saved automatically after login."
+    "description": "Collection to exercise AuctionSystem API via Postman. The API runs on http://localhost:5185 in development; token is saved automatically after login."
   },
   "item": [
     {
@@ -14,7 +14,7 @@
           { "key": "Content-Type", "value": "application/json" }
         ],
         "body": { "mode": "raw", "raw": "{ \"email\": \"admin@auction.com\", \"password\": \"Admin123!\" }" },
-        "url": { "raw": "http://localhost:5184/api/Auth/login", "host": ["localhost"], "port": "5184", "path": ["api","Auth","login"] }
+        "url": { "raw": "http://localhost:5185/api/Auth/login", "host": ["localhost"], "port": "5185", "path": ["api","Auth","login"] }
       },
       "event": [
         {
@@ -44,7 +44,7 @@
         "method": "POST",
         "header": [{ "key": "Content-Type", "value": "application/json" }],
         "body": { "mode": "raw", "raw": "{ \"username\": \"{{registerUsername}}\", \"email\": \"{{registerEmail}}\", \"password\": \"Buyer123!\" }" },
-        "url": { "raw": "http://localhost:5184/api/Auth/register", "host": ["localhost"], "port": "5184", "path": ["api","Auth","register"] }
+        "url": { "raw": "http://localhost:5185/api/Auth/register", "host": ["localhost"], "port": "5185", "path": ["api","Auth","register"] }
       },
       "event": [
         {
@@ -65,21 +65,21 @@
       "request": {
         "method": "GET",
         "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-        "url": { "raw": "http://localhost:5184/api/Auth/me", "host": ["localhost"], "port": "5184", "path": ["api","Auth","me"] }
+        "url": { "raw": "http://localhost:5185/api/Auth/me", "host": ["localhost"], "port": "5185", "path": ["api","Auth","me"] }
       }
     },
     {
       "name": "Lots - Get All",
       "request": {
         "method": "GET",
-        "url": { "raw": "http://localhost:5184/api/Lots", "host": ["localhost"], "port": "5184", "path": ["api","Lots"] }
+        "url": { "raw": "http://localhost:5185/api/Lots", "host": ["localhost"], "port": "5185", "path": ["api","Lots"] }
       }
     },
     {
       "name": "Lots - Search",
       "request": {
         "method": "GET",
-        "url": { "raw": "http://localhost:5184/api/Lots/search?searchQuery=phone&minPrice=10&maxPrice=500", "host": ["localhost"], "port": "5184", "path": ["api","Lots","search"], "query": [] }
+        "url": { "raw": "http://localhost:5185/api/Lots/search?searchQuery=phone&minPrice=10&maxPrice=500", "host": ["localhost"], "port": "5185", "path": ["api","Lots","search"], "query": [] }
       }
     },
     {
@@ -88,7 +88,7 @@
         "method": "POST",
         "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
         "body": { "mode": "raw", "raw": "{ \"title\": \"Test lot\", \"description\": \"Test via Postman\", \"startingPrice\": 10.5, \"startTime\": \"2026-06-03T00:00:00\", \"endTime\": \"2026-06-10T00:00:00\", \"categoryId\": 1 }" },
-        "url": { "raw": "http://localhost:5184/api/Lots", "host": ["localhost"], "port": "5184", "path": ["api","Lots"] }
+        "url": { "raw": "http://localhost:5185/api/Lots", "host": ["localhost"], "port": "5185", "path": ["api","Lots"] }
       },
       "event": [
         {
@@ -123,7 +123,7 @@
       "name": "Lots - Get By Id",
       "request": {
         "method": "GET",
-        "url": { "raw": "http://localhost:5184/api/Lots/{{lastCreatedLotId}}", "host": ["localhost"], "port": "5184", "path": ["api","Lots","{{lastCreatedLotId}}"] }
+        "url": { "raw": "http://localhost:5185/api/Lots/{{lastCreatedLotId}}", "host": ["localhost"], "port": "5185", "path": ["api","Lots","{{lastCreatedLotId}}"] }
       }
     },
     {
@@ -132,7 +132,7 @@
         "method": "PUT",
         "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
         "body": { "mode": "raw", "raw": "{ \"title\": \"Updated lot\", \"description\": \"Updated via Postman\", \"startingPrice\": 20.0, \"startTime\": \"2026-06-04T00:00:00\", \"endTime\": \"2026-06-11T00:00:00\", \"categoryId\": 1, \"status\": \"Pending\" }" },
-        "url": { "raw": "http://localhost:5184/api/Lots/{{lastCreatedLotId}}", "host": ["localhost"], "port": "5184", "path": ["api","Lots","{{lastCreatedLotId}}"] }
+        "url": { "raw": "http://localhost:5185/api/Lots/{{lastCreatedLotId}}", "host": ["localhost"], "port": "5185", "path": ["api","Lots","{{lastCreatedLotId}}"] }
       }
     },
     {
@@ -140,7 +140,7 @@
       "request": {
         "method": "PUT",
         "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-        "url": { "raw": "http://localhost:5184/api/Lots/{{lastCreatedLotId}}/approve?managerId=2", "host": ["localhost"], "port": "5184", "path": ["api","Lots","{{lastCreatedLotId}}","approve"], "query": [{ "key": "managerId", "value": "2" }] }
+        "url": { "raw": "http://localhost:5185/api/Lots/{{lastCreatedLotId}}/approve?managerId=2", "host": ["localhost"], "port": "5185", "path": ["api","Lots","{{lastCreatedLotId}}","approve"], "query": [{ "key": "managerId", "value": "2" }] }
       }
     },
     {
@@ -149,7 +149,7 @@
         "method": "POST",
         "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
         "body": { "mode": "raw", "raw": "{ \"lotId\": {{lastCreatedLotId}}, \"amount\": 25.0 }" },
-        "url": { "raw": "http://localhost:5184/api/Auction/bids", "host": ["localhost"], "port": "5184", "path": ["api","Auction","bids"] }
+        "url": { "raw": "http://localhost:5185/api/Auction/bids", "host": ["localhost"], "port": "5185", "path": ["api","Auction","bids"] }
       }
     },
     {
@@ -157,14 +157,14 @@
       "request": {
         "method": "DELETE",
         "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-        "url": { "raw": "http://localhost:5184/api/Lots/{{lastCreatedLotId}}", "host": ["localhost"], "port": "5184", "path": ["api","Lots","{{lastCreatedLotId}}"] }
+        "url": { "raw": "http://localhost:5185/api/Lots/{{lastCreatedLotId}}", "host": ["localhost"], "port": "5185", "path": ["api","Lots","{{lastCreatedLotId}}"] }
       }
     },
     {
       "name": "Categories - Get All",
       "request": {
         "method": "GET",
-        "url": { "raw": "http://localhost:5184/api/Categories", "host": ["localhost"], "port": "5184", "path": ["api","Categories"] }
+        "url": { "raw": "http://localhost:5185/api/Categories", "host": ["localhost"], "port": "5185", "path": ["api","Categories"] }
       }
     },
     {
@@ -173,7 +173,7 @@
         "method": "POST",
         "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
         "body": { "mode": "raw", "raw": "{ \"name\": \"NewCategory\" }" },
-        "url": { "raw": "http://localhost:5184/api/Categories", "host": ["localhost"], "port": "5184", "path": ["api","Categories"] }
+        "url": { "raw": "http://localhost:5185/api/Categories", "host": ["localhost"], "port": "5185", "path": ["api","Categories"] }
       },
       "event": [
         {
@@ -207,7 +207,7 @@
       "request": {
         "method": "DELETE",
         "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-        "url": { "raw": "http://localhost:5184/api/Categories/{{lastCreatedCategoryId}}", "host": ["localhost"], "port": "5184", "path": ["api","Categories","{{lastCreatedCategoryId}}"] }
+        "url": { "raw": "http://localhost:5185/api/Categories/{{lastCreatedCategoryId}}", "host": ["localhost"], "port": "5185", "path": ["api","Categories","{{lastCreatedCategoryId}}"] }
       }
     }
   ]
