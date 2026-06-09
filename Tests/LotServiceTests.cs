@@ -127,6 +127,9 @@ namespace Tests
             var mockUoW = new Mock<IUnitOfWork>();
             var lot = new Lot { Id = 1 };
             mockUoW.Setup(u => u.LotRepository.GetByIdAsync(1)).ReturnsAsync(lot);
+            // Ensure BidRepository returns an async-capable empty queryable so ToListAsync() works
+            var emptyBids = new List<Bid>().BuildMock();
+            mockUoW.Setup(u => u.BidRepository.GetAsQueryable()).Returns(emptyBids);
 
             var lotService = new LotService(mockUoW.Object, _mapper);
             await lotService.DeleteLotAsync(1);

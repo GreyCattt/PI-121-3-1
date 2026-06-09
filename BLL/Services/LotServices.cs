@@ -141,9 +141,10 @@ namespace BLL.Services
             if (lot == null)
                 throw new EntityNotFoundException("Lot", id);
 
-            var lotBids = (await _unitOfWork.BidRepository.GetAllAsync())
+            var lotBids = await _unitOfWork.BidRepository
+                .GetAsQueryable()
                 .Where(b => b.LotId == id)
-                .ToList();
+                .ToListAsync();
 
             foreach (var bid in lotBids)
             {
