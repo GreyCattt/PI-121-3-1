@@ -19,12 +19,6 @@ namespace PL.Controllers
             _authService = authService;
         }
 
-        /// <summary>
-        /// Авторизація користувача та отримання JWT.
-        /// </summary>
-        /// <example>
-        /// { "email": "admin@auction.com", "password": "Admin123!" }
-        /// </example>
         [HttpPost("login")]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
@@ -33,12 +27,6 @@ namespace PL.Controllers
             return Ok(new { Token = token });
         }
 
-        /// <summary>
-        /// Реєстрація нового користувача та отримання JWT.
-        /// </summary>
-        /// <example>
-        /// { "username": "buyer1", "email": "buyer1@example.com", "password": "Buyer123!" }
-        /// </example>
         [HttpPost("register")]
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
@@ -47,9 +35,6 @@ namespace PL.Controllers
             return Ok(new { Token = token });
         }
 
-        /// <summary>
-        /// Повертає дані поточного користувача з JWT.
-        /// </summary>
         [HttpGet("me")]
         [Authorize]
         public async Task<ActionResult<AuthenticatedUserDto>> Me()

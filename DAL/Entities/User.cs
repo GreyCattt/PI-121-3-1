@@ -12,10 +12,8 @@ namespace DAL.Entities
 
         public string PasswordHash { get; set; } = string.Empty;
 
-        // Використовуємо твій UserRole з файлу Enums.cs
         public UserRole Role { get; set; }
 
-        // Навігаційні властивості
         public virtual ICollection<Lot> CreatedLots { get; set; } = new List<Lot>();
         public virtual ICollection<Bid> Bids { get; set; } = new List<Bid>();
     }

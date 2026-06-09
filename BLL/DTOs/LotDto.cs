@@ -8,7 +8,7 @@ namespace BLL.DTOs
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public decimal StartingPrice { get; set; }
-        public decimal CurrentPrice { get; set; } // Обчислюється на основі максимальної ставки
+        public decimal CurrentPrice { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public string Status { get; set; } = string.Empty;

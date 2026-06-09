@@ -25,7 +25,6 @@ namespace Tests
             _mapper = config.CreateMapper();
         }
 
-        // --- CREATE ---
         [Fact]
         public async Task CreateLotAsync_ValidData_ReturnsLotIdAndSavesToDb()
         {
@@ -80,7 +79,6 @@ namespace Tests
             await Assert.ThrowsAsync<AuctionValidationException>(() => lotService.CreateLotAsync(lotDto));
         }
 
-        // --- GET & UPDATE & DELETE ---
         [Fact]
         public async Task GetLotByIdAsync_ExistingId_ReturnsMappedDto()
         {
@@ -127,7 +125,6 @@ namespace Tests
             var mockUoW = new Mock<IUnitOfWork>();
             var lot = new Lot { Id = 1 };
             mockUoW.Setup(u => u.LotRepository.GetByIdAsync(1)).ReturnsAsync(lot);
-            // Ensure BidRepository returns an async-capable empty queryable so ToListAsync() works
             var emptyBids = new List<Bid>().BuildMock();
             mockUoW.Setup(u => u.BidRepository.GetAsQueryable()).Returns(emptyBids);
 
@@ -138,7 +135,6 @@ namespace Tests
             mockUoW.Verify(u => u.SaveChangesAsync(), Times.Once);
         }
 
-        // --- APPROVE ---
         [Fact]
         public async Task ApproveLotAsync_LotIsPending_ChangesStatusToActive()
         {
@@ -175,7 +171,6 @@ namespace Tests
             await Assert.ThrowsAsync<EntityNotFoundException>(() => lotService.ApproveLotAsync(99, 1));
         }
 
-        // --- SEARCH & FILTER ---
         [Fact]
         public async Task SearchAndFilterLotsAsync_NoFilters_ReturnsAllLots()
         {
@@ -208,7 +203,6 @@ namespace Tests
             mockUoW.Setup(u => u.LotRepository.GetAsQueryable()).Returns(lots);
             var lotService = new LotService(mockUoW.Object, _mapper);
 
-            // Шукаємо: містить "phone", категорія 1, ціна від 500 до 1200, статус Active
             var result = await lotService.SearchAndFilterLotsAsync("phone", 1, LotStatus.Active, 500m, 1200m);
 
             var resultList = result.ToList();

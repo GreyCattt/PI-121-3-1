@@ -43,9 +43,6 @@ namespace DAL.Repositories
             _dbSet.Remove(entity);
         }
 
-        /// <summary>
-        /// Повертає IQueryable для побудування фільтрованих запитів
-        /// </summary>
         public IQueryable<T> GetAsQueryable()
         {
             return _dbSet.AsQueryable();

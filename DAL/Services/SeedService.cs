@@ -7,9 +7,6 @@ using DAL.Services;
 
 namespace DAL.Services
 {
-    /// <summary>
-    /// Сервіс для додавання тестових даних в БД при запуску приложення
-    /// </summary>
     public class SeedService
     {
         private readonly AuctionDbContext _context;
@@ -19,14 +16,10 @@ namespace DAL.Services
             _context = context;
         }
 
-        /// <summary>
-        /// Додає тестові дані в БД, якщо вони відсутні
-        /// </summary>
         public async Task SeedAsync()
         {
             try
             {
-                // Переконуємось, що БД створена
                 await _context.Database.MigrateAsync();
 
                 var adminExists = await _context.Users.AnyAsync(u => u.Email == "admin@auction.com");
@@ -48,7 +41,6 @@ namespace DAL.Services
                     Console.WriteLine("✅ Дефолтного адміністратора додано.");
                 }
 
-                // Якщо база вже не порожня, не дублюємо демо-дані.
                 if (await _context.Users.CountAsync() > 1)
                 {
                     Console.WriteLine("✅ У БД вже є користувачі, seed демо-даних пропущено.");
@@ -86,7 +78,6 @@ namespace DAL.Services
                 _context.Users.AddRange(seller, manager, buyer);
                 await _context.SaveChangesAsync();
 
-                // Додаємо категорії
                 var electronicsCategory = new Category
                 {
                     Name = "Electronics",
@@ -108,7 +99,6 @@ namespace DAL.Services
                 _context.Categories.AddRange(electronicsCategory, phoneCategory, watchCategory);
                 await _context.SaveChangesAsync();
 
-                // Додаємо лоти
                 var now = DateTime.UtcNow;
 
                 var lot1 = new Lot
@@ -164,7 +154,6 @@ namespace DAL.Services
                 _context.Lots.AddRange(lot1, lot2, lot3, lot4);
                 await _context.SaveChangesAsync();
 
-                // Додаємо тестові ставки на активні лоти
                 var bid1 = new Bid
                 {
                     LotId = lot2.Id,
@@ -195,12 +184,10 @@ namespace DAL.Services
                 Console.WriteLine($"⚠️  Помилка підключення до БД: {dbEx.Message}");
                 Console.WriteLine("ℹ️  Переконайтеся, що SQL Server запущений.");
                 Console.WriteLine("   Для запуску використайте: docker-compose up -d");
-                // Не кидаємо виключення, щоб додаток міг стартувати без БД
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ Помилка при додаванні тестових даних: {ex.GetType().Name}: {ex.Message}");
-                // Не кидаємо виключення, щоб додаток міг стартувати без БД
             }
         }
     }

@@ -63,10 +63,9 @@ namespace Tests
             var mockUoW = new Mock<IUnitOfWork>();
             var mockConfig = GetMockConfiguration();
 
-            var emptyUsers = new List<User>(); // База порожня, email унікальний
+                 var emptyUsers = new List<User>();
             mockUoW.Setup(u => u.UserRepository.GetAllAsync()).ReturnsAsync(emptyUsers);
 
-            // Налаштовуємо мок, щоб при додаванні симулювати збереження в базі
             mockUoW.Setup(u => u.UserRepository.AddAsync(It.IsAny<User>()))
                    .Callback<User>(u => emptyUsers.Add(u))
                    .Returns(Task.CompletedTask);

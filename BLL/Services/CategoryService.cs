@@ -27,7 +27,6 @@ namespace BLL.Services
 
         public async Task<int> CreateCategoryAsync(string name)
         {
-            // Валідація: чи існує категорія
             var existing = await _unitOfWork.CategoryRepository.GetAsQueryable()
                 .FirstOrDefaultAsync(c => c.Name.ToLower() == name.ToLower());
             
@@ -46,7 +45,6 @@ namespace BLL.Services
             var category = await _unitOfWork.CategoryRepository.GetByIdAsync(id);
             if (category == null) throw new EntityNotFoundException("Category", id);
 
-            // Перевірка чи є лоти в категорії
             var hasLots = await _unitOfWork.LotRepository.GetAsQueryable().AnyAsync(l => l.CategoryId == id);
             if (hasLots) throw new AuctionValidationException("Неможливо видалити категорію, оскільки вона містить лоти.");
 

@@ -10,10 +10,10 @@ namespace DAL.Entities
 
     public enum LotStatus
     {
-        Pending,   // Очікує підтвердження менеджером
-        Active,    // Торги тривають
-        Cancelled, // Скасовано
-        Sold,      // Продано
-        NotSold    // Торги завершені без покупця
+        Pending,
+        Active,
+        Cancelled,
+        Sold,
+        NotSold
     }
 }

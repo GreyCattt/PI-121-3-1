@@ -36,7 +36,6 @@ namespace BLL.Services
                 throw new UnauthorizedAccessException("Невірний email або пароль.");
             }
 
-            // Формуємо дані для токена (Claims), включаючи роль
             var jwtKey = _configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key is missing in configuration.");
             var jwtIssuer = _configuration["Jwt:Issuer"] ?? throw new InvalidOperationException("Jwt:Issuer is missing in configuration.");
             var jwtAudience = _configuration["Jwt:Audience"] ?? throw new InvalidOperationException("Jwt:Audience is missing in configuration.");
@@ -53,7 +52,6 @@ namespace BLL.Services
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var expireDays = Convert.ToInt32(expireDaysText);
 
-            // Створюємо токен
             var token = new JwtSecurityToken(
                 issuer: jwtIssuer,
                 audience: jwtAudience,
@@ -62,7 +60,6 @@ namespace BLL.Services
                 signingCredentials: creds
             );
 
-            // Повертаємо токен у вигляді рядка
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 

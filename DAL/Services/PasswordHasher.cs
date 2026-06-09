@@ -24,7 +24,6 @@ namespace DAL.Services
                 return false;
             }
 
-            // Backward compatibility for older demo data that may still use plain text passwords.
             if (storedHash == password)
             {
                 return true;

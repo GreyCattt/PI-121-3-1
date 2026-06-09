@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization; // ДОДАНО ДЛЯ АВТОРИЗАЦІЇ
+using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
 using System.Security.Claims;
 using BLL.Interfaces;
@@ -18,8 +18,6 @@ namespace PL.Controllers
             _auctionService = auctionService;
         }
 
-        // POST: api/auction/bids
-        // Робити ставки можуть тільки зареєстровані користувачі та адміни
         [HttpPost("bids")]
         [Authorize(Roles = "Registered,Admin")]
         public async Task<IActionResult> PlaceBid([FromBody] PlaceBidRequest request)

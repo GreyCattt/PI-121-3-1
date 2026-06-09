@@ -13,10 +13,6 @@ namespace BLL.Interfaces
         Task ApproveLotAsync(int lotId, int managerId);
         Task UpdateLotAsync(int id, LotUpdateDto lotDto);
         Task DeleteLotAsync(int id);
-
-        /// <summary>
-        /// Пошук і фільтрація лотів за критеріями
-        /// </summary>
         Task<IEnumerable<LotDto>> SearchAndFilterLotsAsync(
             string? searchQuery = null,
             int? categoryId = null,

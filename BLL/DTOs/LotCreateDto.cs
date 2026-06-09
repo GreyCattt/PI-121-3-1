@@ -12,6 +12,6 @@ namespace BLL.DTOs
         public DateTime EndTime { get; set; }
         public int CategoryId { get; set; }
         public int SellerId { get; set; }
-        public LotStatus Status { get; set; } = LotStatus.Pending; // Додано поле статусу
+        public LotStatus Status { get; set; } = LotStatus.Pending;
     }
 }

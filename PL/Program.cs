@@ -1,10 +1,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json.Serialization;
-using System.Reflection;
 using DAL.Data;
 using DAL.Interfaces;
 using DAL.Repositories;
@@ -21,42 +19,6 @@ builder.Services.AddControllers()
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
-builder.Services.AddEndpointsApiExplorer();
-
-// 1. НАЛАШТУВАННЯ SWAGGER ДЛЯ JWT ТОКЕНА
-builder.Services.AddSwaggerGen(c =>
-{
-    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    if (File.Exists(xmlPath))
-    {
-        c.IncludeXmlComments(xmlPath);
-    }
-
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Description = "JWT Authorization header. Введіть 'Bearer' [пробіл] і ваш токен.\n\nНаприклад: \"Bearer eyJhbGci...\"",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
-    });
-
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
-        }
-    });
-});
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is missing in configuration.");
@@ -71,10 +33,8 @@ builder.Services.AddScoped<SeedService>();
 
 builder.Services.AddScoped<ILotService, LotService>();
 builder.Services.AddScoped<IAuctionService, AuctionService>();
-// Реєструємо наш новий сервіс авторизації!
 builder.Services.AddScoped<IAuthService, AuthService>();
 
-// 2. НАЛАШТУВАННЯ АВТОРИЗАЦІЇ (JWT)
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -94,26 +54,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-// Додаємо підтримку авторизації
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// Seed початкових даних при запуску, щоб дефолтний адмін був доступний на новій БД.
 using (var scope = app.Services.CreateScope())
 {
     var seedService = scope.ServiceProvider.GetRequiredService<SeedService>();
     await seedService.SeedAsync();
 }
 
-// ДОДАНО: Middleware для глобального перехоплення помилок
 app.UseMiddleware<PL.Middlewares.ExceptionHandlingMiddleware>();
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
